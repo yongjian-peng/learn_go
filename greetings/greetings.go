@@ -10,9 +10,11 @@ import (
 // Hello returns a greeting for the named preson
 func Hello(name string) (string, error) {
 	if name == "" {
-		return "", errors.New("empty name")
+		// return "", errors.New("empty name")
+		return name, errors.New("empty name")
 	}
-	message := fmt.Sprintf(randomFormat(), name)
+	// message := fmt.Sprintf(randomFormat(), name)
+	message := fmt.Sprintf(randomFormat())
 	return message, nil
 }
 
