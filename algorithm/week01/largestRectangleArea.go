@@ -1,5 +1,7 @@
 package week01
 
+import "fmt"
+
 // 柱张图中的最大矩形 单调栈解法
 type Rect struct {
 	width  int
@@ -7,6 +9,14 @@ type Rect struct {
 }
 
 // import "fmt"
+
+func RunLargestRectangleArea() {
+	// 柱状图中最大矩形
+	largest_rect := []int{2, 1, 5, 6, 2, 3}
+	ans := LargestRectangleArea(largest_rect)
+
+	fmt.Println(ans)
+}
 
 func LargestRectangleArea(heights []int) int {
 	//fmt.Println("largestRectangleArea")
