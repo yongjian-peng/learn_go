@@ -6,4 +6,6 @@ func RunWeek01() {
 	// 合并两个有序数组
 	RunMergeTwoArray()
 
+	// 滑动窗口最大值
+	RunMaxSlidingWindow()
 }
