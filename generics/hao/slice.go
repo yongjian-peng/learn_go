@@ -1,6 +1,7 @@
 package hao
 
 import (
+	"bytes"
 	"fmt"
 	"unsafe"
 )
@@ -12,11 +13,23 @@ type slice struct {
 }
 
 func RunSlice() {
-	foo = make([]int, 5)
-	foo[3] = 42
-	foo[4] = 100
+	fmt.Println("bar")
+	a := make([]int, 32)
+	a[5] = 5
+	b := a[1:16]
+	a = append(a, 1)
+	a[2] = 42
+	fmt.Println(a)
+	fmt.Println(b)
+}
 
-	bar := foo[1:4]
-	bar[1] = 99
-	fmt.Println(bar)
+func RunSlice2() {
+	path := []byte("AAAA/BBBBBBBBB")
+	sepIndex := bytes.IndexByte(path, '/')
+
+	dir1 := path[:sepIndex]
+	dir2 := path[sepIndex+1:]
+
+	fmt.Println("dir1 =>", string(dir1))
+	fmt.Println("dir2 =>", string(dir2))
 }
