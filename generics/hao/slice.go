@@ -91,29 +91,36 @@ type WithName struct {
 }
 
 type Country struct {
-	// Name string
-	WithName
+	Name string
 }
 type City struct {
-	// Name string
-	WithName
+	Name string
+}
+type Stringable interface {
+	ToString() string
 }
 type Printable interface {
 	PrintStr()
 }
 
-// func (c Country) PrintStr() {
-// 	fmt.Println(c.Name)
-// }
-func (w WithName) PrintStr() {
-	fmt.Println(w.Name)
+func (c Country) ToString() string {
+	return "Country = " + c.Name
+}
+func (c City) ToString() string {
+	return "City = " + c.Name
+}
+
+func PrintStr(p Stringable) {
+	fmt.Println(p.ToString())
 }
 
 func RunSlice5() {
 	// c1 := Country{"China"}
 	// c2 := City{"Beijing"}
-	c1 := Country{WithName{"Chain"}}
-	c2 := City{WithName{"Beijing"}}
-	c1.PrintStr()
-	c2.PrintStr()
+	// c1 := Country{WithName{"Chain"}}
+	// c2 := City{WithName{"Beijing"}}
+	c1 := Country{"USA"}
+	c2 := City{"Los Angeles"}
+	PrintStr(c1)
+	PrintStr(c2)
 }
