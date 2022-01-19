@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	// "strconv"
 	"./hao"
 )
@@ -68,5 +68,7 @@ func main() {
 	// fmt.Printf("Generic Sums with Constraint: %v and %v\n",
 	// 	SumNumbers(ints),
 	// 	SumNumbers(floats))
-	hao.RunSlice();
+	// hao.RunSlice();
+	// hao.RunSlice3()
+	hao.RunSlice4()
 }
