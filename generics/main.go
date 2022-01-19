@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	// "strconv"
+	"./hao"
 )
 
 type Number interface {
@@ -43,28 +44,29 @@ func SumNumbers[K comparable, V Number](m map[K]V) V {
 
 func main() {
 	// $ints = 
-	ints := map[string]int64{
-		"first":  34,
-		"second": 12,
-	}
+	// ints := map[string]int64{
+	// 	"first":  34,
+	// 	"second": 12,
+	// }
 
-	floats := map[string]float64{
-		"first":  35.98,
-		"second": 26.99,
-	}
-	fmt.Printf("Non-Generic Sums: %v and %v\n",
-		SumInts(ints),
-		SumFloats(floats))
+	// floats := map[string]float64{
+	// 	"first":  35.98,
+	// 	"second": 26.99,
+	// }
+	// fmt.Printf("Non-Generic Sums: %v and %v\n",
+	// 	SumInts(ints),
+	// 	SumFloats(floats))
 
-	fmt.Printf("Generic Sums: %v and %v\n",
-		SumIntsOrFloats[string, int64](ints),
-		SumIntsOrFloats[string, float64](floats))
+	// fmt.Printf("Generic Sums: %v and %v\n",
+	// 	SumIntsOrFloats[string, int64](ints),
+	// 	SumIntsOrFloats[string, float64](floats))
 
-	fmt.Printf("Generic Sums, type parameters inferred: %v and %v\n",
-		SumIntsOrFloats(ints),
-		SumIntsOrFloats(floats))
+	// fmt.Printf("Generic Sums, type parameters inferred: %v and %v\n",
+	// 	SumIntsOrFloats(ints),
+	// 	SumIntsOrFloats(floats))
 
-	fmt.Printf("Generic Sums with Constraint: %v and %v\n",
-		SumNumbers(ints),
-		SumNumbers(floats))
+	// fmt.Printf("Generic Sums with Constraint: %v and %v\n",
+	// 	SumNumbers(ints),
+	// 	SumNumbers(floats))
+	hao.RunSlice();
 }

@@ -10,5 +10,11 @@ func RunWeek01() {
 	// RunMaxSlidingWindow()
 
 	// 接雨水
-	RunTrap()
+	// RunTrap()
+
+	// 反转链表
+	// RunReverseList()
+
+	// k 个一组反转链表
+	RunReverseNodeInKGroup()
 }
