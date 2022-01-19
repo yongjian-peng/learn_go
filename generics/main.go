@@ -68,11 +68,14 @@ func main() {
 	// fmt.Printf("Generic Sums with Constraint: %v and %v\n",
 	// 	SumNumbers(ints),
 	// 	SumNumbers(floats))
+	// 数组切片
 	// hao.RunSlice();
-<<<<<<< HEAD
-	hao.RunSlice2()
-=======
+	// 字符串切片
+	// hao.RunSlice2()
+	// map 深度比较是否相等
 	// hao.RunSlice3()
+	// 结构体 打印
 	hao.RunSlice4()
->>>>>>> aef7066e6f57e8307f674d1ed48448c7511f36f7
+	// 接口编程模式
+	hao.RunSlice5()
 }

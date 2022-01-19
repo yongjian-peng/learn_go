@@ -20,7 +20,6 @@ type Person struct {
 }
 
 func RunSlice() {
-<<<<<<< HEAD
 	fmt.Println("bar")
 	a := make([]int, 32)
 	a[5] = 5
@@ -35,17 +34,21 @@ func RunSlice2() {
 	path := []byte("AAAA/BBBBBBBBB")
 	sepIndex := bytes.IndexByte(path, '/')
 
-	dir1 := path[:sepIndex]
+	// dir1 := path[:sepIndex]
+	dir1 := path[:sepIndex:sepIndex]
 	dir2 := path[sepIndex+1:]
-=======
 	var foo []int
 	foo = make([]int, 5)
 	foo[3] = 42
 	foo[4] = 100
->>>>>>> aef7066e6f57e8307f674d1ed48448c7511f36f7
 
 	fmt.Println("dir1 =>", string(dir1))
 	fmt.Println("dir2 =>", string(dir2))
+
+	dir1 = append(dir1, "suffix"...)
+
+	fmt.Println("dir1 =>", string(dir1)) // dir1 => AAAAsuffix
+	fmt.Println("dir2 =>", string(dir2)) // dir2 => uffixBBBB
 }
 
 func RunSlice3() {
@@ -79,6 +82,38 @@ func RunSlice4() {
 		Sexual: "Male",
 		Age:    44,
 	}
-	PrintPerson(&p)
+	// PrintPerson(&p)
 	p.Print()
+}
+
+type WithName struct {
+	Name string
+}
+
+type Country struct {
+	// Name string
+	WithName
+}
+type City struct {
+	// Name string
+	WithName
+}
+type Printable interface {
+	PrintStr()
+}
+
+// func (c Country) PrintStr() {
+// 	fmt.Println(c.Name)
+// }
+func (w WithName) PrintStr() {
+	fmt.Println(w.Name)
+}
+
+func RunSlice5() {
+	// c1 := Country{"China"}
+	// c2 := City{"Beijing"}
+	c1 := Country{WithName{"Chain"}}
+	c2 := City{WithName{"Beijing"}}
+	c1.PrintStr()
+	c2.PrintStr()
 }
