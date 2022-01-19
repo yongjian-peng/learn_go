@@ -69,5 +69,10 @@ func main() {
 	// 	SumNumbers(ints),
 	// 	SumNumbers(floats))
 	// hao.RunSlice();
+<<<<<<< HEAD
 	hao.RunSlice2()
+=======
+	// hao.RunSlice3()
+	hao.RunSlice4()
+>>>>>>> aef7066e6f57e8307f674d1ed48448c7511f36f7
 }
