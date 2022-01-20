@@ -124,3 +124,27 @@ func RunSlice5() {
 	PrintStr(c1)
 	PrintStr(c2)
 }
+
+type Shape interface {
+	Sides() int
+	Area() int
+}
+type Square struct {
+	len int
+}
+type Square2 struct {
+	len2 int
+}
+
+func (s *Square) Sides() int {
+	return 4
+}
+func (n *Square2) Area() int {
+	return 6
+}
+func RunSlice6() {
+	var _ Shape = (*Square)(*Square2)
+	// s := Square{len: 5}
+	// n := Square2{len2: 6}
+	// fmt.Printf("%d%d\n", s.Sides(), n.Area())
+}

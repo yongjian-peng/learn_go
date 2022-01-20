@@ -75,7 +75,9 @@ func main() {
 	// map 深度比较是否相等
 	// hao.RunSlice3()
 	// 结构体 打印
-	hao.RunSlice4()
+	// hao.RunSlice4()
 	// 接口编程模式
-	hao.RunSlice5()
+	// hao.RunSlice5()
+	// 接口验证
+	hao.RunSlice6();
 }
