@@ -79,5 +79,14 @@ func main() {
 	// 接口编程模式
 	// hao.RunSlice5()
 	// 接口验证
-	hao.RunSlice6();
+	// hao.RunSlice6();
+
+	// go 资源清理
+	// hao.RunSlice7();
+
+	// 错误处理方式
+	// hao.RunSlice8()
+
+	// 指针 point 学习
+	// hao.RunPoint()
 }

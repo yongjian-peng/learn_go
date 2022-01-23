@@ -2,7 +2,11 @@ package hao
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
+	"io"
+	"log"
+	"os"
 	"reflect"
 	"unsafe"
 )
@@ -13,11 +17,11 @@ type slice struct {
 	cap   int            // 容量有多大
 }
 
-type Person struct {
-	Name   string // 指向存放数据的数组指针
-	Sexual string // 长度有多大
-	Age    int    // 容量有多大
-}
+// type Person struct {
+// 	Name   string // 指向存放数据的数组指针
+// 	Sexual string // 长度有多大
+// 	Age    int    // 容量有多大
+// }
 
 func RunSlice() {
 	fmt.Println("bar")
@@ -67,24 +71,24 @@ func RunSlice3() {
 	fmt.Println("s1 == s2:", reflect.DeepEqual(s1, s2))
 }
 
-func PrintPerson(p *Person) {
-	fmt.Printf("Name=%s, Sexual=%s, Age=%d\n",
-		p.Name, p.Sexual, p.Age)
-}
-func (p *Person) Print() {
-	fmt.Printf("Name=%s, Sexual=%s, Age=%d\n",
-		p.Name, p.Sexual, p.Age)
-}
+// func PrintPerson(p *Person) {
+// 	fmt.Printf("Name=%s, Sexual=%s, Age=%d\n",
+// 		p.Name, p.Sexual, p.Age)
+// }
+// func (p *Person) Print() {
+// 	fmt.Printf("Name=%s, Sexual=%s, Age=%d\n",
+// 		p.Name, p.Sexual, p.Age)
+// }
 
-func RunSlice4() {
-	var p = Person{
-		Name:   "Hao Chen",
-		Sexual: "Male",
-		Age:    44,
-	}
-	// PrintPerson(&p)
-	p.Print()
-}
+// func RunSlice4() {
+// 	var p = Person{
+// 		Name:   "Hao Chen",
+// 		Sexual: "Male",
+// 		Age:    44,
+// 	}
+// 	// PrintPerson(&p)
+// 	p.Print()
+// }
 
 type WithName struct {
 	Name string
@@ -143,8 +147,162 @@ func (n *Square2) Area() int {
 	return 6
 }
 func RunSlice6() {
-	var _ Shape = (*Square)(*Square2)
+	// var _ Shape = (*Square)(*Square2)
 	// s := Square{len: 5}
 	// n := Square2{len2: 6}
 	// fmt.Printf("%d%d\n", s.Sides(), n.Area())
+}
+
+func Close(c io.Closer) {
+	err := c.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func RunSlice7() {
+	r, err := os.Open("a")
+	if err != nil {
+		log.Fatalf("error opening 'a'\n")
+	}
+
+	defer Close(r) // 使用 defer 关键字在函数退出时关闭文件
+	r, err = os.Open("b")
+	if err != nil {
+		log.Fatalf("error opening 'b'\n")
+	}
+	defer Close(r) // 使用 defer 关键字在函数退出时关闭文件
+}
+
+type Point struct {
+	Longitude     string
+	Latitrude     string
+	Distance      string
+	ElevationGain string
+	ElevationLoss string
+}
+
+type Reader struct {
+	r   io.Reader
+	err error
+}
+
+func (r *Reader) read(data interface{}) {
+	if r.err == nil {
+		r.err = binary.Read(r.r, binary.BigEndian, data)
+	}
+}
+
+// func parse(r io.Reader) (*Point, error) {
+func parse(input io.Reader) (*Point, error) {
+	// var p Point
+	// var err error
+	// if err := binary.Read(r, binary.BigEndian, &p.Longitude); err != nil {
+	// 	return nil, err
+	// }
+	// if err := binary.Read(r, binary.BigEndian, &p.Latitrude); err != nil {
+	// 	return nil, err
+	// }
+	// if err := binary.Read(r, binary.BigEndian, &p.Distance); err != nil {
+	// 	return nil, err
+	// }
+	// if err := binary.Read(r, binary.BigEndian, &p.ElevationGain); err != nil {
+	// 	return nil, err
+	// }
+	// if err := binary.Read(r, binary.BigEndian, &p.ElevationLoss); err != nil {
+	// 	return nil, err
+	// }
+	// return &p, err
+
+	// var p Point
+	// var err error
+	// read := func(data interface{}) {
+	// 	if err != nil {
+	// 		return
+	// 	}
+	// 	err = binary.Read(r, binary.BigEndian, data)
+	// }
+	// read(&p.Longitude)
+	// read(&p.Latitrude)
+	// read(&p.Distance)
+	// read(&p.ElevationGain)
+	// read(&p.ElevationLoss)
+
+	// if err != nil {
+	// 	return &p, err
+	// }
+
+	// return &p, nil
+
+	// scanner := bufio.NewScanner(input)
+	// for scanner.Scan() {
+	// 	token := scanner.Text()
+	// 	// process token
+	// }
+
+	// if err := scanner.Err(); err != nil {
+	// 	// process the error
+	// }
+
+	var p Point
+	r := Reader{r: input}
+
+	r.read(&p.Longitude)
+	r.read(&p.Latitrude)
+	r.read(&p.Distance)
+	r.read(&p.ElevationGain)
+	r.read(&p.ElevationLoss)
+
+	if r.err != nil {
+		return nil, r.err
+	}
+	return &p, nil
+}
+
+// 长度不够，少一个Weight
+var b = []byte{0x48, 0x61, 0x6f, 0x20, 0x43, 0x68, 0x65, 0x6e, 0x00, 0x00, 0x2c, 0x2c}
+var r = bytes.NewReader(b)
+
+type Person struct {
+	Name   [10]byte
+	Age    uint8
+	Weight uint8
+	err    error
+}
+
+func (p *Person) read(data interface{}) {
+	if p.err == nil {
+		p.err = binary.Read(r, binary.BigEndian, data)
+	}
+}
+
+func (p *Person) ReadName() *Person {
+	p.read(&p.Name)
+	return p
+}
+
+func (p *Person) ReadAge() *Person {
+	p.read(&p.Age)
+	return p
+}
+
+func (p *Person) ReadWeight() *Person {
+	p.read(&p.Weight)
+	return p
+}
+
+func (p *Person) Print() *Person {
+	if p.err == nil {
+		fmt.Printf("Name=%s, Age=%d, Weight=%d\n", p.Name, p.Age, p.Weight)
+	}
+	return p
+}
+
+func RunSlice8() {
+	// var data [10]byte
+	// data[0] = 'A'
+	// data[1] = 'E'
+	p := Person{}
+	p.ReadName().ReadAge().ReadWeight().Print()
+	fmt.Println(p.err) // EOF 错误
 }
