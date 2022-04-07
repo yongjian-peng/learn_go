@@ -88,5 +88,8 @@ func main() {
 	// hao.RunSlice8()
 
 	// 指针 point 学习
-	// hao.RunPoint()
+	hao.RunPoint()
+
+	// 函数式编程
+	// hao.RunFunctional()
 }
