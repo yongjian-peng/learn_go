@@ -4,10 +4,27 @@ import (
 	"curltools/curl"
 	"curltools/model"
 	"curltools/signature"
+	"fmt"
+	"sync"
 )
 
-func main() {
+const NUM int = 4
 
+func main() {
+	wg := &sync.WaitGroup{}
+	for i := 0; i < NUM; i++ {
+		wg.Add(1)
+		go func(index int) {
+			defer wg.Done()
+			defer SendPost()
+
+		}(i)
+	}
+	wg.Wait()
+	fmt.Printf("所有的请求已完成")
+}
+
+func SendPost() {
 	postjson := map[string]string{
 		"appid": "1000258",
 		"sn":    "11202204021728004314877380235",
