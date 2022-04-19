@@ -5,15 +5,16 @@ import (
 	"curltools/model"
 	"curltools/signature"
 	"fmt"
+	"strconv"
 	"sync"
 	"sync/atomic"
 )
 
-const GroupNum int = 1
+const GroupNum int = 4
 
-const IntChanNum int = 10
-const ResultChanNum int = 10
-const ExitChanNum int = 8
+const IntChanNum int = 500
+const ResultChanNum int = 500
+const ExitChanNum int = 2
 
 var ResultSuccessNum int64
 var wg sync.WaitGroup
@@ -29,9 +30,12 @@ func main() {
 		}(i)
 	}
 	wg.Wait()
-	fmt.Printf("所有的请求已完成")
+	fmt.Printf("所有的请求已完成,请求数量：%d\n", IntChanNum*GroupNum)
 	// fmt.Printf("%x", &TotalAmount)
-	println(ResultSuccessNum)
+	// fmt.Printf("所有的请求已完成,请求数量：%d\n", ResultSuccessNum)
+	resNum, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(ResultSuccessNum)/float64(IntChanNum*GroupNum)), 64)
+	resNum = resNum * 100
+	fmt.Println("所有的请求已完成,成功率：", resNum, "%")
 }
 
 func usechannel() {
