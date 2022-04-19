@@ -40,7 +40,7 @@ func main() {
 
 func usechannel() {
 	intChan := make(chan int, IntChanNum)
-	resultChan := make(chan map[string]interface{}, ResultChanNum)
+	resultChan := make(chan int, ResultChanNum)
 	exitChan := make(chan bool, ExitChanNum)
 
 	go func() {
@@ -71,17 +71,12 @@ func usechannel() {
 
 }
 
-func calc(taskChan chan int, resChan chan map[string]interface{}, exitChan chan bool) {
+func calc(taskChan chan int, resChan chan int, exitChan chan bool) {
 	for v := range taskChan {
 
-		var result map[string]interface{}
-		result = SendPost()
-		// fmt.Printf("result:code:%d\n", result["code"])
-		if result["code"] == 200.0 {
-			addResultNum(v)
-			// fmt.Println(result)
-			resChan <- result
-		}
+		go SendPost()
+
+		resChan <- v
 	}
 
 	fmt.Println("exit")
@@ -93,9 +88,9 @@ func addResultNum(i int) {
 	fmt.Printf("result:%d,\n", i)
 }
 
-func SendPost() (res map[string]interface{}) {
+func SendPost() {
 	postjson := map[string]string{
-		"appid": "1000258",
+		"appid": "1000258000",
 		"sn":    "11202204021728004314877380235",
 	}
 
@@ -113,22 +108,18 @@ func SendPost() (res map[string]interface{}) {
 	}
 
 	var postWithJosn = &model.PostWithJson{
-		Appid: "1000258",
+		Appid: "100025800",
 		Sn:    "11202204021728004314877380235",
 		Sign:  postJson,
 	}
 
-	url := "http://api.hk.blueoceantech.co/order/query"
+	url := "http://api-yong.hk.blueoceantech.co/order/query"
 
 	result := curl.Curl(url, *postWithJosn)
 	// fmt.Println(result["code"])
-	// if result["code"] == 200 {
-	// 	atomic.AddInt64(&ResultSuccessNum, 1)
-	// }
-
-	res = result
-
-	return res
+	if result["code"] == 200.0 {
+		atomic.AddInt64(&ResultSuccessNum, 1)
+	}
 
 	// Output: *goz.Response
 }
