@@ -9,9 +9,11 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
+
+	"github.com/idoubi/goz"
 )
 
-const GroupNum int = 1
+const GroupNum int = 10
 
 const ResultChanNum int = 10
 const ExitChanNum int = 10
@@ -22,11 +24,16 @@ var logger *log.Logger
 
 func main() {
 
+	wg.Add(GroupNum)
+
+	p := &sync.Pool{
+		New: createNewClient,
+	}
+
 	for i := 0; i < GroupNum; i++ {
-		wg.Add(1)
 		go func(index int) {
 			defer wg.Done()
-			usechannel()
+			usechannel(p)
 
 		}(i)
 	}
@@ -39,12 +46,16 @@ func main() {
 	fmt.Println("所有的请求已完成,成功率：", resNum, "%")
 }
 
-func usechannel() {
+func createNewClient() interface{} {
+	return goz.NewClient()
+}
+
+func usechannel(pool *sync.Pool) {
 	resultChan := make(chan int, ResultChanNum)
 	exitChan := make(chan bool, ExitChanNum)
 
 	for i := 0; i < ExitChanNum; i++ {
-		go calc(resultChan, exitChan)
+		go calc(resultChan, exitChan, pool)
 	}
 
 	//等待所有计算的goroutine全部退出
@@ -63,15 +74,15 @@ func usechannel() {
 
 }
 
-func calc(resChan chan int, exitChan chan bool) {
+func calc(resChan chan int, exitChan chan bool, pool *sync.Pool) {
 
-	SendPost()
+	SendPost(pool)
 
 	fmt.Println("exit")
 	exitChan <- true
 }
 
-func SendPost() {
+func SendPost(pool *sync.Pool) {
 	postjson := map[string]string{
 		"appid": "1000258000",
 		"sn":    "11202204021728004314877380235",
@@ -98,7 +109,7 @@ func SendPost() {
 
 	url := "http://test.co"
 
-	result := curl.Curl(url, *postWithJosn)
+	result := curl.Curl(url, *postWithJosn, pool)
 	// fmt.Println(result["code"])
 
 	if result["code"] == 200.0 {

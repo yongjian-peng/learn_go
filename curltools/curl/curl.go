@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"sync"
 
 	"curltools/model"
 	"curltools/mylogger"
@@ -12,7 +13,7 @@ import (
 	"github.com/idoubi/goz"
 )
 
-func Curl(url string, postWithJosn model.PostWithJson) (res map[string]interface{}) {
+func Curl(url string, postWithJosn model.PostWithJson, pool *sync.Pool) (res map[string]interface{}) {
 	// var postWithJosn = model.PostWithJson{
 	// 	Appid: "Hao Chen",
 	// 	Sn:    "Male",
@@ -22,7 +23,11 @@ func Curl(url string, postWithJosn model.PostWithJson) (res map[string]interface
 	// postWithJosn.Sn = "11202204021728004314877380235"
 	// postWithJosn.Sign = "abc"
 
-	cli := goz.NewClient()
+	// cli := goz.NewClient()
+
+	cli := pool.Get().(*goz.Request)
+
+	defer pool.Put(cli)
 
 	resp, err := cli.Post(url, goz.Options{
 		Headers: map[string]interface{}{
