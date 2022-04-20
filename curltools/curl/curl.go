@@ -2,9 +2,12 @@ package curl
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"reflect"
 
 	"curltools/model"
+	"curltools/mylogger"
 
 	"github.com/idoubi/goz"
 )
@@ -32,8 +35,9 @@ func Curl(url string, postWithJosn model.PostWithJson) (res map[string]interface
 	}
 
 	body, _ := resp.GetBody()
-	// fmt.Println("type:", reflect.TypeOf(body))
-	// fmt.Println(body)
+	fmt.Println("type:", reflect.TypeOf(body))
+	fmt.Println(body)
+	mylogger.WriteLog("curl.txt", string(body))
 	// Output: json:{"key1":"value1","key2":["value21","value22"],"key3":333}
 
 	// var responseData = model.ResponseData

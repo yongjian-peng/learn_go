@@ -5,19 +5,20 @@ import (
 	"curltools/model"
 	"curltools/signature"
 	"fmt"
+	"log"
 	"strconv"
 	"sync"
 	"sync/atomic"
 )
 
-const GroupNum int = 4
+const GroupNum int = 1
 
-const IntChanNum int = 500
-const ResultChanNum int = 500
-const ExitChanNum int = 2
+const ResultChanNum int = 10
+const ExitChanNum int = 10
 
 var ResultSuccessNum int64
 var wg sync.WaitGroup
+var logger *log.Logger
 
 func main() {
 
@@ -25,34 +26,25 @@ func main() {
 		wg.Add(1)
 		go func(index int) {
 			defer wg.Done()
-			defer usechannel()
+			usechannel()
 
 		}(i)
 	}
 	wg.Wait()
-	fmt.Printf("所有的请求已完成,请求数量：%d\n", IntChanNum*GroupNum)
+	fmt.Printf("所有的请求已完成,请求数量：%d\n", ResultChanNum*GroupNum)
 	// fmt.Printf("%x", &TotalAmount)
 	// fmt.Printf("所有的请求已完成,请求数量：%d\n", ResultSuccessNum)
-	resNum, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(ResultSuccessNum)/float64(IntChanNum*GroupNum)), 64)
+	resNum, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(ResultSuccessNum)/float64(ResultChanNum*GroupNum)), 64)
 	resNum = resNum * 100
 	fmt.Println("所有的请求已完成,成功率：", resNum, "%")
 }
 
 func usechannel() {
-	intChan := make(chan int, IntChanNum)
 	resultChan := make(chan int, ResultChanNum)
 	exitChan := make(chan bool, ExitChanNum)
 
-	go func() {
-		for i := 0; i < IntChanNum; i++ {
-			intChan <- i
-		}
-
-		close(intChan)
-	}()
-
 	for i := 0; i < ExitChanNum; i++ {
-		go calc(intChan, resultChan, exitChan)
+		go calc(resultChan, exitChan)
 	}
 
 	//等待所有计算的goroutine全部退出
@@ -71,21 +63,12 @@ func usechannel() {
 
 }
 
-func calc(taskChan chan int, resChan chan int, exitChan chan bool) {
-	for v := range taskChan {
+func calc(resChan chan int, exitChan chan bool) {
 
-		go SendPost()
-
-		resChan <- v
-	}
+	SendPost()
 
 	fmt.Println("exit")
 	exitChan <- true
-}
-
-func addResultNum(i int) {
-	atomic.AddInt64(&ResultSuccessNum, 1)
-	fmt.Printf("result:%d,\n", i)
 }
 
 func SendPost() {
@@ -104,19 +87,20 @@ func SendPost() {
 	err, postJson := signature.Signature(postjson, signal)
 
 	if err != nil {
-		return res
+		return
 	}
 
 	var postWithJosn = &model.PostWithJson{
-		Appid: "100025800",
-		Sn:    "11202204021728004314877380235",
+		Appid: postjson["Appid"],
+		Sn:    postjson["Sn"],
 		Sign:  postJson,
 	}
 
-	url := "http://api-yong.hk.blueoceantech.co/order/query"
+	url := "http://test.co"
 
 	result := curl.Curl(url, *postWithJosn)
 	// fmt.Println(result["code"])
+
 	if result["code"] == 200.0 {
 		atomic.AddInt64(&ResultSuccessNum, 1)
 	}
