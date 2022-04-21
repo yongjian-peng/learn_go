@@ -16,5 +16,8 @@ func RunWeek01() {
 	// RunReverseList()
 
 	// k 个一组反转链表
-	RunReverseNodeInKGroup()
+	// RunReverseNodeInKGroup()
+
+	// 选择排序
+	RunSelectSort()
 }
