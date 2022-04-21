@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./week01"
+	"example/algorithm/week01"
 )
 
 func main() {

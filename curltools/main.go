@@ -13,10 +13,10 @@ import (
 	"github.com/idoubi/goz"
 )
 
-const GroupNum int = 10
+const GroupNum int = 1
 
-const ResultChanNum int = 10
-const ExitChanNum int = 10
+const ResultChanNum int = 2
+const ExitChanNum int = 2
 
 var ResultSuccessNum int64
 var wg sync.WaitGroup
@@ -34,7 +34,6 @@ func main() {
 		go func(index int) {
 			defer wg.Done()
 			usechannel(p)
-
 		}(i)
 	}
 	wg.Wait()
@@ -81,6 +80,7 @@ func calc(resChan chan int, exitChan chan bool, pool *sync.Pool) {
 
 	fmt.Println("exit")
 	exitChan <- true
+	// return
 }
 
 func SendPost(pool *sync.Pool) {
