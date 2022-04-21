@@ -65,6 +65,7 @@ func usechannel(pool *sync.Pool) {
 			fmt.Println("wait goroute ", i, " exited")
 		}
 		close(resultChan)
+		close(exitChan)
 	}()
 
 	for v := range resultChan {

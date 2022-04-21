@@ -3,6 +3,7 @@ package mylogger
 import (
 	"io"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -29,7 +30,14 @@ func WriteLog(filename, msg string) error {
 	)
 	f, err = os.OpenFile(path+filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
-	_, err = io.WriteString(f, LineFeed+"[log:]"+time.Now().Format("2006-01-02 15:04:05")+" "+msg)
+	var build strings.Builder
+	build.WriteString(LineFeed)
+	build.WriteString(" [log:]")
+	build.WriteString(time.Now().Format("2006-01-02 15:04:05"))
+	build.WriteString(" ")
+	build.WriteString(msg)
+
+	_, err = io.WriteString(f, build.String())
 	// logger = log.New(logFile, "[qSkiptool]", log.LstdFlags|log.Lshortfile|log.LUTC) // 将文件设置为loger作为输出
 	defer f.Close()
 	return err
