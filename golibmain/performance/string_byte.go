@@ -17,7 +17,7 @@ func bytes2str(b []byte) string {
 }
 
 func main() {
-	s := strings.Repeat("abc", 3)
+	s := strings.Repeat("abcdef", 4)
 	b := str2bytes(s)
 
 	s2 := bytes2str(b)
