@@ -6,11 +6,15 @@ func RunSelectSort() {
 
 	fmt.Println("OK")
 
-	arr := []int{4, 6, 9, 10, 33}
+	arr := []int{4, 6, 19, 10, 33, 7}
 
 	// SelectSort(arr)
 
-	InsertSort(arr)
+	// InsertSort(arr)
+
+	// 归并排序
+	lenght := len(arr)
+	MergeSort(arr, 0, lenght-1)
 
 	fmt.Println(arr)
 
@@ -56,5 +60,43 @@ func InsertSort(arr []int) {
 			}
 		}
 
+	}
+}
+
+func MergeSort(arr []int, l int, r int) {
+	// 有一个二分
+	if l >= r {
+		return
+	}
+
+	mid := (l + r) >> 1
+
+	MergeSort(arr, 0, mid)
+	MergeSort(arr, mid+1, r)
+
+	MergeArray(arr, l, mid, r)
+
+	// 合并两个数组 返回一个数组
+}
+
+func MergeArray(arr []int, left int, mid int, right int) {
+	len := right - left + 1
+	var temp []int
+
+	i := left
+	j := mid + 1
+
+	for k := 0; k < len; k++ {
+		if j > right || (i <= mid && arr[i] <= arr[j]) {
+			temp = append(temp, arr[i])
+			i++
+		} else {
+			temp = append(temp, arr[j])
+			j++
+		}
+	}
+
+	for k := 0; k < len; k++ {
+		arr[left+k] = temp[k]
 	}
 }
