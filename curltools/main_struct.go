@@ -15,7 +15,7 @@ import (
 
 const GroupNum int = 2
 
-const ResultChanNum int = 20
+const ResultChanNum int = 2
 
 var ResultSuccessNum int64
 var wg sync.WaitGroup
