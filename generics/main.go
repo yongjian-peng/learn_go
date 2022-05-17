@@ -1,10 +1,8 @@
 package main
 
-import (
-	// "fmt"
-	// "strconv"
-	"./hao"
-)
+// "fmt"
+// "strconv"
+import "generics/hao"
 
 type Number interface {
 	int64 | float64
@@ -27,11 +25,11 @@ func SumFloats(m map[string]float64) float64 {
 }
 
 func SumIntsOrFloats[K comparable, V int64 | float64](m map[K]V) V {
-    var s V
-    for _, v := range m {
-        s += v
-    }
-    return s
+	var s V
+	for _, v := range m {
+		s += v
+	}
+	return s
 }
 
 func SumNumbers[K comparable, V Number](m map[K]V) V {
@@ -43,7 +41,7 @@ func SumNumbers[K comparable, V Number](m map[K]V) V {
 }
 
 func main() {
-	// $ints = 
+	// $ints =
 	// ints := map[string]int64{
 	// 	"first":  34,
 	// 	"second": 12,
@@ -69,9 +67,9 @@ func main() {
 	// 	SumNumbers(ints),
 	// 	SumNumbers(floats))
 	// 数组切片
-	// hao.RunSlice();
+	// hao.RunSlice()
 	// 字符串切片
-	// hao.RunSlice2()
+	hao.RunSlice2()
 	// map 深度比较是否相等
 	// hao.RunSlice3()
 	// 结构体 打印
@@ -88,7 +86,7 @@ func main() {
 	// hao.RunSlice8()
 
 	// 指针 point 学习
-	hao.RunPoint()
+	// hao.RunPoint()
 
 	// 函数式编程
 	// hao.RunFunctional()
