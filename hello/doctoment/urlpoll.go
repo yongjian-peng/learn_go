@@ -1,6 +1,6 @@
-// Copyright 2010 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
+// 版权所有 2010 Go 作者。 版权所有。
+// 此源代码的使用由 BSD 样式管理
+// 可以在 LICENSE 文件中找到的许可证。
 
 package main
 
@@ -18,7 +18,7 @@ const (
 )
 
 var urls = []string{
-	"http://www.baidu.com/",
+	"http://leetcode.cn/problemset/all/",
 }
 
 // State represents the last-known state of a URL.
@@ -27,9 +27,9 @@ type State struct {
 	status string
 }
 
-// StateMonitor maintains a map that stores the state of the URLs being
-// polled, and prints the current state every updateInterval nanoseconds.
-// It returns a chan State to which resource state should be sent.
+// StateMonitor 维护了一个映射，该映射存储了正在运行的 URL 的状态
+// 轮询，并每隔 updateInterval 纳秒打印当前状态。
+// 它返回一个资源状态应该发送到的 chan 状态。
 func StateMonitor(updateInterval time.Duration) chan<- State {
 	updates := make(chan State)
 	urlStatus := make(map[string]string)
@@ -47,7 +47,7 @@ func StateMonitor(updateInterval time.Duration) chan<- State {
 	return updates
 }
 
-// logState prints a state map.
+// logState 打印状态图。
 func logState(s map[string]string) {
 	log.Println("Current state:")
 	for k, v := range s {
@@ -55,14 +55,14 @@ func logState(s map[string]string) {
 	}
 }
 
-// Resource represents an HTTP URL to be polled by this program.
+// Resource 表示该程序要轮询的 HTTP URL
 type Resource struct {
 	url      string
 	errCount int
 }
 
-// Poll executes an HTTP HEAD request for url
-// and returns the HTTP status string or an error string.
+// Poll 对 url 执行 HTTP HEAD 请求
+// 并返回 HTTP 状态字符串或错误字符串
 func (r *Resource) Poll() string {
 	resp, err := http.Head(r.url)
 	if err != nil {
@@ -74,8 +74,8 @@ func (r *Resource) Poll() string {
 	return resp.Status
 }
 
-// Sleep sleeps for an appropriate interval (dependent on error state)
-// before sending the Resource to done.
+// Sleep 休眠适当的时间间隔（取决于错误状态）
+// 在发送资源之前完成。
 func (r *Resource) Sleep(done chan<- *Resource) {
 	time.Sleep(pollInterval + errTimeout*time.Duration(r.errCount))
 	done <- r
@@ -90,18 +90,18 @@ func Poller(in <-chan *Resource, out chan<- *Resource, status chan<- State) {
 }
 
 func main() {
-	// Create our input and output channels.
+	// 创建我们的输入和输出通道。
 	pending, complete := make(chan *Resource), make(chan *Resource)
 
-	// Launch the StateMonitor.
+	// 启动状态监视器。
 	status := StateMonitor(statusInterval)
 
-	// Launch some Poller goroutines.
+	// 启动一些 Poller goroutine
 	for i := 0; i < numPollers; i++ {
 		go Poller(pending, complete, status)
 	}
 
-	// Send some Resources to the pending queue.
+	// 将一些资源发送到待处理队列。
 	go func() {
 		for _, url := range urls {
 			pending <- &Resource{url: url}
