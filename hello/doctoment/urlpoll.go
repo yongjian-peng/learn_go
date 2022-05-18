@@ -11,14 +11,15 @@ import (
 )
 
 const (
-	numPollers     = 2                // number of Poller goroutines to launch
-	pollInterval   = 60 * time.Second // how often to poll each URL
-	statusInterval = 10 * time.Second // how often to log status to stdout
-	errTimeout     = 10 * time.Second // back-off timeout on error
+	numPollers     = 2               // 要启动的轮询 goroutine 的数量
+	pollInterval   = 1 * time.Second // 轮询每个 URL 的频率
+	statusInterval = 1 * time.Second // 多久将状态记录到标准输出
+	errTimeout     = 1 * time.Second // 错误后退超时
 )
 
 var urls = []string{
-	"http://leetcode.cn/problemset/all/",
+	"http://test.co/notify.php",
+	"http://api-yong.hk.blueoceantech.co/",
 }
 
 // State represents the last-known state of a URL.
