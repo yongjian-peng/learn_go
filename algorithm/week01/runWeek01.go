@@ -1,5 +1,11 @@
 package week01
 
+import (
+	"fmt"
+
+	"github.com/halfrost/LeetCode-Go/structures"
+)
+
 func RunWeek01() {
 	// 柱状图中最大矩形
 	// RunLargestRectangleArea()
@@ -19,5 +25,13 @@ func RunWeek01() {
 	// RunReverseNodeInKGroup()
 
 	// 选择排序
-	RunSelectSort()
+	// RunSelectSort()
+
+	// 二叉树的最大深度
+	para104 := []int{3, 9, 20, structures.NULL, structures.NULL, 15, 7}
+	root := structures.Ints2TreeNode(para104)
+	depth := RunMaxDepth(root)
+
+	fmt.Println(depth)
+
 }
