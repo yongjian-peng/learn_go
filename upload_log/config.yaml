@@ -1,0 +1,27 @@
+mysql:
+  path: 192.168.0.100:3306
+  # path: 127.0.0.1:3306
+  config: charset=utf8mb4&parseTime=True&loc=Local
+  db-name: hkpay
+  username: root
+  password: "123456"
+  max-idle-conns: 0
+  max-open-conns: 0
+  log-mode: false
+  log-zap: ""
+redis:
+  db: 11
+  addr: 192.168.0.100:6379
+  password: "123456"
+zap:
+  level: info
+  format: console
+  prefix: '[BlueOceanPay]'
+  director: log
+  link-name: latest_log
+  showLine: true
+  encode-level: LowercaseColorLevelEncoder
+  stacktrace-key: stacktrace
+  log-in-console: true
+notify:
+  server-name: V1
