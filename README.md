@@ -11,5 +11,5 @@
     ├── greetings                    (go 官方文档demo)    
     ├── grpc-go                      (grpc-go 官方demo)  
     ├── hello                        (其他练习) 
-    ├── interview-master             (copy 一个不错的 c++ demo 很全)
+    ├── upload_log                   (上传日志到OSSdemo)
     ├── web-service-gin              (gin demo)  
