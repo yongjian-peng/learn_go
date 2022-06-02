@@ -25,3 +25,12 @@ zap:
   log-in-console: true
 notify:
   server-name: V1
+uploadlog:
+  biz-search-dir: "C:/Users/pyj50/Desktop/生产日志/主节点/"
+  biz-reg-exp: "/^.+[.]log$/i"
+  biz-system-name: "payment_api_demo"
+  oss-access-key-id: "-"
+  oss-access-key-secret: "-"
+  oss-endpoint: "-"
+  oss-bucket: "bo-logstorage"
+  oss-object-prefix: "demo-test/proj-api/"
