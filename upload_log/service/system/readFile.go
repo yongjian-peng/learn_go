@@ -58,7 +58,7 @@ func (ReadFileService *ReadFileService) ReadFile(file string) {
 				uploadLogModel.Sha1 = logic.BuildFileHash(filenameWith)
 				uploadLogModel.Source = ossObjectPrefix
 
-				fmt.Println(uploadLogModel.Sha1)
+				// fmt.Println(uploadLogModel.Sha1)
 
 				if result.RowsAffected > 0 {
 					// 更新
@@ -73,6 +73,9 @@ func (ReadFileService *ReadFileService) ReadFile(file string) {
 						log.Printf("上传日志插入DB失败:[失败原因]:%+v [待插入的值]:%+v", res.Error, uploadLogModel)
 					}
 				}
+				// 记录日志
+				log.Printf("读取文件成功，写入数据库:%+v", uploadLogModel)
+				break
 			}
 		}
 	}

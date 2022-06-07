@@ -5,6 +5,7 @@
 *.so
 *.dylib
 /curltools/log/*
+/upload_log/log/*
 /hello/write-log/log/*
 
 # Test binary, built with `go test -c`

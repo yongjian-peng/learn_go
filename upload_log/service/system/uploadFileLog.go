@@ -1,11 +1,9 @@
 package system
 
-import "fmt"
-
 type UploadFileLogService struct{}
 
 func (UploadFileLogService *UploadFileLogService) UploadFileLog() {
-	fmt.Print("uploadLog")
+	// fmt.Print("uploadLog")
 	// 读取数据库中的文件
 
 	// 待上传文件 依次上传到 oss 存储服务

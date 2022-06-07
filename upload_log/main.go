@@ -21,8 +21,10 @@ func main() {
 	// 初始化Redis
 	// initialize.Redis()
 
-	// 初始化Gorm
+	// 初始化日志
+	initialize.InitLog()
 
+	// 初始化Gorm
 	global.Gorm = initialize.Gorm()
 	// using standard library "flag" package
 	// global.Log2()

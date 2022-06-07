@@ -8,7 +8,6 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
-	"fmt"
 	"hash"
 	"sync"
 )
@@ -65,17 +64,17 @@ func NewHashWriter(useMd5, useSha1, useSha256 bool) *HashWriter {
 
 func (this *HashWriter) writeMd5() {
 	doWriteHash(this.md5W, this.md5Chan)
-	fmt.Println("md5 exit")
+	// fmt.Println("md5 exit")
 	this.wg.Done()
 }
 func (this *HashWriter) writeSha1() {
 	doWriteHash(this.sha1W, this.sha1Chan)
-	fmt.Println("sha1 exit")
+	// fmt.Println("sha1 exit")
 	this.wg.Done()
 }
 func (this *HashWriter) writeSha256() {
 	doWriteHash(this.sha256W, this.sha256Chan)
-	fmt.Println("sha256 exit")
+	// fmt.Println("sha256 exit")
 	this.wg.Done()
 }
 func doWriteHash(writer hash.Hash, in chan []byte) {

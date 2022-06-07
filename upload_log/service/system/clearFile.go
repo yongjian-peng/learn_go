@@ -1,11 +1,9 @@
 package system
 
-import "fmt"
-
 type ClearFileService struct{}
 
 func (ClearFileService *ClearFileService) ClearFile() {
-	fmt.Print("clearFile")
+	// fmt.Print("clearFile")
 	// 读取数据库文件 状态为上传成功的
 
 	// 删除对应的文件

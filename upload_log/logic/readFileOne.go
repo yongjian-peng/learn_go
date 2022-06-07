@@ -60,12 +60,12 @@ func BuildFileHash(filepath string) string {
 		hw.Write(b[:n])
 	}
 
-	md5Buf, sha1Buf, sha256Buf := hw.Sum(nil)
+	_, sha1Buf, _ := hw.Sum(nil)
 
 	//hex.EncodeToString(md5Buf)
-	fmt.Printf("md5: %x\n", md5Buf)
-	fmt.Printf("sha1: %x\n", sha1Buf)
-	fmt.Printf("sha256: %x\n", sha256Buf)
+	// fmt.Printf("md5: %x\n", md5Buf)
+	// fmt.Printf("sha1: %x\n", sha1Buf)
+	// fmt.Printf("sha256: %x\n", sha256Buf)
 
 	return hex.EncodeToString(sha1Buf)
 
