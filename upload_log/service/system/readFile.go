@@ -75,7 +75,6 @@ func (ReadFileService *ReadFileService) ReadFile(file string) {
 				}
 				// 记录日志
 				log.Printf("读取文件成功，写入数据库:%+v", uploadLogModel)
-				break
 			}
 		}
 	}
