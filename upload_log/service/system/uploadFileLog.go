@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"upload_log/dao"
 	"upload_log/global"
 	"upload_log/model"
@@ -26,22 +25,26 @@ func (UploadFileLogService *UploadFileLogService) UploadFileLog() {
 		fmt.Print(err)
 	} else {
 
-		b, err := json.Marshal(lists)
+		// lists 是 interface{} 类型 需要使用 json 转成 model 来循环
+		resByre, err := json.Marshal(lists)
 		if err != nil {
 			log.Fatal(err)
 		}
+		// os.Stdout.Write(resByre)
+		var prodLogList []model.ProdLogUploadResultModel
+		jsonRes := json.Unmarshal(resByre, &prodLogList)
+		if jsonRes != nil {
+			fmt.Printf("%v", jsonRes)
+			return
+		}
+		// fmt.Printf("使用 json：%v", prodLogList)
 
-		for _, val := range b {
-			fmt.Println(val)
+		for _, val := range prodLogList {
+			if val.FileName != "" {
+				fmt.Println(val.FileName)
+			}
 		}
 
-		os.Stdout.Write(b)
-
-		// var out bytes.Buffer
-		// json.Indent(&out, b, "=", "\t")
-		// out.WriteTo(os.Stdout)
-
-		// fmt.Println(json.Marshal(lists))
 		fmt.Printf("list %d", total)
 
 	}

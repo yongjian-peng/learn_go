@@ -39,6 +39,12 @@ func GetProdLogUploadList(searchParms model.SearchParams) (err error, list inter
 	}
 
 	err = db.Order("id desc").Limit(limit).Offset(offset).Find(&prodLogList).Error
+
+	// for _, val := range prodLogList {
+	// 	fmt.Println("type:", reflect.TypeOf(val))
+	// 	fmt.Println(val.FileName)
+	// }
+
 	return err, prodLogList, total
 
 }
