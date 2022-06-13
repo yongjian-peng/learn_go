@@ -7,6 +7,8 @@ import (
 	"upload_log/dao"
 	"upload_log/global"
 	"upload_log/model"
+	"upload_log/upload"
+	"upload_log/utils"
 )
 
 type UploadFileLogService struct{}
@@ -41,6 +43,14 @@ func (UploadFileLogService *UploadFileLogService) UploadFileLog() {
 
 		for _, val := range prodLogList {
 			if val.FileName != "" {
+				if utils.Exists(val.FileName) == false {
+					continue
+				}
+				err = UploadFile(val.FileName)
+				if err != nil {
+					log.Println("上传资源失败: ", val.FileName)
+				}
+				// 待上传文件 依次上传到 oss 存储服务
 				fmt.Println(val.FileName)
 			}
 		}
@@ -48,8 +58,22 @@ func (UploadFileLogService *UploadFileLogService) UploadFileLog() {
 		fmt.Printf("list %d", total)
 
 	}
-	// 待上传文件 依次上传到 oss 存储服务
 
 	// 上传成功后 依次更新数据库中的状态
 
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: UploadFile
+//@description: 根据配置文件判断是文件上传到本地或者七牛云
+//@param: filename string
+//@return: err error
+func UploadFile(filename string) (err error) {
+	oss := upload.NewOss()
+	filePath, key, uploadErr := oss.UploadFile(filename)
+	if uploadErr != nil {
+		return err
+	}
+
+	return nil
 }
