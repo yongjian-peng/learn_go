@@ -7,4 +7,7 @@ type Server struct {
 	Mysql         Mysql         `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
 	Notify        Notify        `mapstructure:"notify" json:"notify" yaml:"notify"`
 	UploadLogData UploadLogData `mapstructure:"uploadlog" json:"uploadlog" yaml:"uploadlog`
+	Local         Local         `mapstructure:"local" json:"local" yaml:"local"`
+	AliyunOSS     AliyunOSS     `mapstructure:"aliyun-oss" json:"aliyunOSS" yaml:"aliyun-oss"`
+	System        System        `mapstructure:"system" json:"system" yaml:"system"`
 }

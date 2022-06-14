@@ -1,6 +1,10 @@
 package utils
 
-import "os"
+import (
+	"crypto/md5"
+	"encoding/hex"
+	"os"
+)
 
 // 判断所给路径文件/文件夹是否存在
 func Exists(path string) bool {
@@ -26,4 +30,16 @@ func IsDir(path string) bool {
 // 判断所给路径是否为文件
 func IsFile(path string) bool {
 	return !IsDir(path)
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: MD5V
+//@description: md5加密
+//@param: str []byte
+//@return: string
+
+func MD5V(str []byte, b ...byte) string {
+	h := md5.New()
+	h.Write(str)
+	return hex.EncodeToString(h.Sum(b))
 }

@@ -7,8 +7,8 @@ import (
 	"upload_log/dao"
 	"upload_log/global"
 	"upload_log/model"
-	"upload_log/upload"
 	"upload_log/utils"
+	"upload_log/utils/upload"
 )
 
 type UploadFileLogService struct{}
@@ -74,6 +74,8 @@ func UploadFile(filename string) (err error) {
 	if uploadErr != nil {
 		return err
 	}
+
+	fmt.Println("filePaht:", filePath, key)
 
 	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path"
 	"strings"
@@ -37,26 +38,26 @@ func (*Local) UploadFile(filename string) (string, string, error) {
 	name := strings.TrimSuffix(filename, ext)
 	name = utils.MD5V([]byte(name))
 	// 拼接新文件名
-	filename := name + "_" + time.Now().Format("20060102150405") + ext
+	newfilename := name + "_" + time.Now().Format("20060102150405") + ext
 	// 尝试创建此路径
-	mkdirErr := os.MkdirAll(global.GVA_CONFIG.Local.Path, os.ModePerm)
+	mkdirErr := os.MkdirAll(global.Config.Local.Path, os.ModePerm)
 	if mkdirErr != nil {
-		global.GVA_LOG.Error("function os.MkdirAll() Filed", zap.Any("err", mkdirErr.Error()))
+		log.Println("function os.MkdirAll() Filed", zap.Any("err", mkdirErr.Error()))
 		return "", "", errors.New("function os.MkdirAll() Filed, err:" + mkdirErr.Error())
 	}
 	// 拼接路径和文件名
-	p := global.GVA_CONFIG.Local.Path + "/" + filename
+	p := global.Config.Local.Path + "/" + newfilename
 
 	f, openError := os.Open(filename) // 读取文件
 	if openError != nil {
-		global.GVA_LOG.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
+		log.Println("function file.Open() Filed", zap.Any("err", openError.Error()))
 		return "", "", errors.New("function file.Open() Filed, err:" + openError.Error())
 	}
 	defer f.Close() // 创建文件 defer 关闭
 
 	out, createErr := os.Create(p)
 	if createErr != nil {
-		global.GVA_LOG.Error("function os.Create() Filed", zap.Any("err", createErr.Error()))
+		log.Println("function os.Create() Filed", zap.Any("err", createErr.Error()))
 
 		return "", "", errors.New("function os.Create() Filed, err:" + createErr.Error())
 	}
@@ -64,7 +65,7 @@ func (*Local) UploadFile(filename string) (string, string, error) {
 
 	_, copyErr := io.Copy(out, f) // 传输（拷贝）文件
 	if copyErr != nil {
-		global.GVA_LOG.Error("function io.Copy() Filed", zap.Any("err", copyErr.Error()))
+		log.Println("function io.Copy() Filed", zap.Any("err", copyErr.Error()))
 		return "", "", errors.New("function io.Copy() Filed, err:" + copyErr.Error())
 	}
 	return p, filename, nil
@@ -80,8 +81,8 @@ func (*Local) UploadFile(filename string) (string, string, error) {
 //@return: error
 
 func (*Local) DeleteFile(key string) error {
-	p := global.GVA_CONFIG.Local.Path + "/" + key
-	if strings.Contains(p, global.GVA_CONFIG.Local.Path) {
+	p := global.Config.Local.Path + "/" + key
+	if strings.Contains(p, global.Config.Local.Path) {
 		if err := os.Remove(p); err != nil {
 			return errors.New("本地文件删除失败, err:" + err.Error())
 		}
