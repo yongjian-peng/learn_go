@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 	"upload_log/dao"
 	"upload_log/global"
 	"upload_log/model"
@@ -46,6 +47,7 @@ func (UploadFileLogService *UploadFileLogService) UploadFileLog() {
 				if utils.Exists(val.FileName) == false {
 					continue
 				}
+				// 上传文件 & 更新数据库状态
 				err = UploadFile(val.FileName)
 				if err != nil {
 					log.Println("上传资源失败: ", val.FileName)
@@ -54,15 +56,11 @@ func (UploadFileLogService *UploadFileLogService) UploadFileLog() {
 				fmt.Println(val.FileName)
 			}
 		}
-
 		fmt.Printf("list %d", total)
-
 	}
-
-	// 上传成功后 依次更新数据库中的状态
-
 }
 
+// 项目参考地址 参考来实现的 https://github.com/flipped-aurora/gin-vue-admin 这里出处
 //@author: [piexlmax](https://github.com/piexlmax)
 //@function: UploadFile
 //@description: 根据配置文件判断是文件上传到本地或者七牛云
@@ -75,7 +73,19 @@ func UploadFile(filename string) (err error) {
 		return err
 	}
 
-	fmt.Println("filePaht:", filePath, key)
+	var uploadLogModel = model.ProdLogUploadResultModel{}
+	prodLogUploadResultMap := map[string]interface{}{
+		"OssFileName":  filePath,
+		"MTime":        time.Now().Unix(),
+		"OriginStatus": model.PRODLOG_ORIGIN_STATUS_UPLOAD_FINISH,
+	}
+	log.Println("上传文件成功:", filePath, key)
+	db := global.Gorm.Where("file_name = ?", filename).First(&uploadLogModel)
+	if uploadLogModel.OriginStatus == model.PRODLOG_ORIGIN_STATUS_INIT {
+		err = db.Updates(prodLogUploadResultMap).Error
+		log.Printf("更新文件成功:%+v ", uploadLogModel)
+		return err
+	}
 
 	return nil
 }
