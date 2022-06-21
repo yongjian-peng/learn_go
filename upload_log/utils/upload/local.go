@@ -81,11 +81,16 @@ func (*Local) UploadFile(filename string) (string, string, error) {
 //@return: error
 
 func (*Local) DeleteFile(key string) error {
-	p := global.Config.Local.Path + "/" + key
-	if strings.Contains(p, global.Config.Local.Path) {
-		if err := os.Remove(p); err != nil {
-			return errors.New("本地文件删除失败, err:" + err.Error())
-		}
-	}
+
+	// if err := os.Remove(key); err != nil {
+	// 	return errors.New("本地文件删除失败, err:" + err.Error())
+	// }
+
+	// p := global.Config.Local.Path + "/" + key
+	// if strings.Contains(p, global.Config.Local.Path) {
+	// 	if err := os.Remove(p); err != nil {
+	// 		return errors.New("本地文件删除失败, err:" + err.Error())
+	// 	}
+	// }
 	return nil
 }

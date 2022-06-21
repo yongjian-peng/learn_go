@@ -21,7 +21,7 @@ func (ClearFileService *ClearFileService) ClearFile() {
 	searchParams.OriginStatus = model.PRODLOG_ORIGIN_STATUS_UPLOAD_FINISH
 	searchParams.Source = global.Config.UploadLogData.OssObjectPrefix
 
-	if err, lists, total := dao.GetProdLogUploadList(searchParams); err != nil {
+	if err, lists, _ := dao.GetProdLogUploadList(searchParams); err != nil {
 		log.Println("上传日志，第三部：", err)
 	} else {
 		// lists 是 interface{} 类型 需要使用 json 转成model 来循环
