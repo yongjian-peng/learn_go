@@ -10,26 +10,36 @@ import (
 	"unsafe"
 	"upload_log/global"
 	"upload_log/utils/filehash"
+
+	"github.com/pkg/errors"
 )
 
-func BuildOssDataName(filename string) string {
+func BuildOssDataName(filename string) (newfilename string, err error) {
 	osspath := global.Config.UploadLogData.OssObjectPrefix
 	// 构造 上传oss 路径+名称
 	var build strings.Builder
 	build.WriteString(osspath)
-	build.WriteString(filename)
+	_, err = build.WriteString(filename)
 
-	return build.String()
+	if err != nil {
+		err = errors.New("filename connect field")
+	}
+
+	return build.String(), err
 }
 
-func BuildLocalDataName(filename string) string {
+func BuildLocalDataName(filename string) (newfilename string, err error) {
 	uploadPath := global.Config.UploadLogData.BizSearchDir
 	// 构造 上传oss 路径+名称
 	var build strings.Builder
 	build.WriteString(uploadPath)
-	build.WriteString(filename)
+	_, err = build.WriteString(filename)
 
-	return build.String()
+	if err != nil {
+		err = errors.New("filename connect field")
+	}
+
+	return build.String(), err
 }
 
 func BuildFileHash(filepath string) string {

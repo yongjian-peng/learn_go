@@ -9,6 +9,8 @@ import (
 	"upload_log/global"
 	"upload_log/logic"
 	"upload_log/model"
+
+	"github.com/pkg/errors"
 )
 
 type ReadFileService struct{}
@@ -40,7 +42,13 @@ func (ReadFileService *ReadFileService) ReadFile(file string) {
 				// 组装sql数据
 				filename := fileInfo.Name()
 
-				filenameWith := logic.BuildLocalDataName(filename)
+				filenameWith, err := logic.BuildLocalDataName(filename)
+
+				if err != nil {
+					e2 := errors.Wrap(err, "filenameWith")
+					log.Println(e2)
+					break
+				}
 				// 写入到数据库
 
 				// 保存数据库
@@ -49,8 +57,17 @@ func (ReadFileService *ReadFileService) ReadFile(file string) {
 				// SN查询
 				result := global.Gorm.Where("file_name = ?", filenameWith).Last(&uploadLogModel)
 
+				OssFileName, err := logic.BuildOssDataName(filename)
+
+				if err != nil {
+					e3 := errors.Wrap(err, "OssFileName")
+					fmt.Printf("%+v\n", err)
+					log.Println(e3)
+					break
+				}
+
 				uploadLogModel.FileName = filenameWith
-				uploadLogModel.OssFileName = logic.BuildOssDataName(filename)
+				uploadLogModel.OssFileName = OssFileName
 				uploadLogModel.MTime = time.Now().Unix()
 				uploadLogModel.CreateTime = time.Now().Format("2006-01-02 15:04:05")
 				uploadLogModel.OriginStatus = model.PRODLOG_ORIGIN_STATUS_INIT
