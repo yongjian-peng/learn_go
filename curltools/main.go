@@ -108,7 +108,7 @@ func SendPost(pool *sync.Pool) {
 		Sign:  postJson,
 	}
 
-	url := "http://test.co"
+	url := "http://notify-test.co"
 
 	result := curl.Curl(url, *postWithJosn, pool)
 	// fmt.Println(result["code"])
