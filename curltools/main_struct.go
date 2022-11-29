@@ -13,13 +13,16 @@ import (
 	"github.com/idoubi/goz"
 )
 
-const GroupNum int = 2
+const (
+	GROUPNUM      int = 2
+	RESULTCHANNUM int = 2
+)
 
-const ResultChanNum int = 2
-
-var ResultSuccessNum int64
-var wg sync.WaitGroup
-var logger *log.Logger
+var (
+	RESUSTSUCCESSNUM int64
+	WG               sync.WaitGroup
+	Logger           *log.Logger
+)
 
 type RunSend struct {
 	execNum int
@@ -39,40 +42,40 @@ func (r *RunSend) ConcurrentExec(task func(r *RunSend)) {
 
 func main() {
 
-	wg.Add(GroupNum)
+	WG.Add(GROUPNUM)
 
-	p := &sync.Pool{
-		New: createNewClient,
+	p := sync.Pool{
+		New: CreateNewClient,
 	}
 
-	for i := 0; i < GroupNum; i++ {
+	for i := 0; i < GROUPNUM; i++ {
 		go func(index int) {
-			defer wg.Done()
+			defer WG.Done()
 			run := RunSend{
-				execNum: ResultChanNum,
-				ch:      make(chan struct{}, ResultChanNum),
+				execNum: RESULTCHANNUM,
+				ch:      make(chan struct{}, RESULTCHANNUM),
 			}
 			run.ConcurrentExec(func(r *RunSend) {
-				SendPost(p)
+				SendPostStuct(&p)
 				r.ch <- struct{}{}
 			})
 		}(i)
 	}
-	wg.Wait()
+	WG.Wait()
 
-	fmt.Printf("所有的请求已完成,请求数量：%d\n", ResultChanNum*GroupNum)
+	fmt.Printf("所有的请求已完成,请求数量：%d\n", RESULTCHANNUM*GROUPNUM)
 	// fmt.Printf("%x", &TotalAmount)
-	// fmt.Printf("所有的请求已完成,请求数量：%d\n", ResultSuccessNum)
-	resNum, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(ResultSuccessNum)/float64(ResultChanNum*GroupNum)), 64)
+	// fmt.Printf("所有的请求已完成,请求数量：%d\n", RESUSTSUCCESSNUM)
+	resNum, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(RESUSTSUCCESSNUM)/float64(RESULTCHANNUM*GROUPNUM)), 64)
 	resNum = resNum * 100
 	fmt.Println("所有的请求已完成,成功率：", resNum, "%")
 }
 
-func createNewClient() interface{} {
+func CreateNewClient() interface{} {
 	return goz.NewClient()
 }
 
-func SendPost(pool *sync.Pool) {
+func SendPostStuct(pool *sync.Pool) {
 	postjson := map[string]string{
 		"appid": "1000258000",
 		"sn":    "11202204021728004314877380235",
@@ -91,7 +94,7 @@ func SendPost(pool *sync.Pool) {
 		return
 	}
 
-	var postWithJosn = &model.PostWithJson{
+	var postWithJosn = model.PostWithJson{
 		Appid: postjson["Appid"],
 		Sn:    postjson["Sn"],
 		Sign:  postJson,
@@ -99,12 +102,11 @@ func SendPost(pool *sync.Pool) {
 
 	url := "http://test.co"
 
-	result := curl.Curl(url, *postWithJosn, pool)
+	result := curl.Curl(url, &postWithJosn, pool)
 	// fmt.Println(result["code"])
 
 	if result["code"] == 200.0 {
-		atomic.AddInt64(&ResultSuccessNum, 1)
+		atomic.AddInt64(&RESUSTSUCCESSNUM, 1)
 	}
-
 	// Output: *goz.Response
 }
