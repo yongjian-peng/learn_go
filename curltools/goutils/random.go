@@ -2,6 +2,7 @@ package goutils
 
 import (
 	"context"
+	"curltools/constant"
 	"curltools/goRedis"
 	"fmt"
 	"github.com/go-redis/redis/v8"
@@ -78,10 +79,11 @@ func GenerateSerialNumBer(region string) string {
 	nowTimeFormat := carbon.Parse(nowTime).ToShortDateTimeString() // 20200805131415
 	curTime := carbon.Now().TimestampNano()
 	redisKey := cast.ToString(curTime)
-	autoIncrement := Redis().Incr(context.Background(), redisKey).Val()
+	redisKeyPrefix := constant.SnPrefix + redisKey
+	autoIncrement := Redis().Incr(context.Background(), redisKeyPrefix).Val()
 	// 设置过期时间
 	if autoIncrement <= 1 {
-		Redis().Expire(context.Background(), redisKey, time.Second*60)
+		Redis().Expire(context.Background(), redisKeyPrefix, time.Second*60)
 	}
 	// 获取统一毫秒内递增值
 	roundNumber := cast.ToString(autoIncrement)

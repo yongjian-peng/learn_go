@@ -2,11 +2,13 @@ package main
 
 import (
 	"curltools/config"
+	"curltools/constant"
 	"curltools/curl"
 	"curltools/goutils"
 	"fmt"
 	"github.com/spf13/cast"
 	"log"
+	"math/rand"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -14,10 +16,10 @@ import (
 	"github.com/idoubi/goz"
 )
 
-const GroupNum int = 300
+const GroupNum int = 1
 
-const ResultChanNum int = 2
-const ExitChanNum int = 2
+const ResultChanNum int = 1
+const ExitChanNum int = 1
 
 var (
 	ResultSuccessNum int64
@@ -26,6 +28,48 @@ var (
 	logger           *log.Logger
 	resCodes         sync.Map
 )
+
+var urls = map[string]map[string]string{
+	"local": {
+		"order":       "http://sunny-pay.co/pay/order",
+		"payout":      "http://sunny-pay.co/pay/payout",
+		"query":       "http://sunny-pay.co/pay/queryOrder",
+		"queryPayout": "http://sunny-pay.co/pay/queryPayout",
+		"returnUrl":   "http://127.0.0.1:8084/api/v1/signup",
+		"notifyUrl":   "http://127.0.0.1:8084/api/v1/signup",
+	},
+	"test": {
+		"order":       "https://hopepatti.fun/pay/order",
+		"payout":      "https://hopepatti.fun/pay/payout",
+		"query":       "https://hopepatti.fun/pay/queryOrder",
+		"queryPayout": "https://hopepatti.fun/pay/queryPayout",
+		"returnUrl":   "http://8.219.100.35:8084/api/v1/notify",
+		"notifyUrl":   "http://8.219.100.35:8084/api/v1/notify",
+	},
+}
+
+var projectList = map[string]map[string]string{
+	"1000012": {
+		"key":   "hqPgg8BP06Sibmp3Q4KW0hMroUyHoOOr",
+		"appid": "1000012",
+	},
+	"1000026": {
+		"key":   "BessXQtS8xy3SWudR0i6gc0zfSk3Z8ll",
+		"appid": "1000026",
+	},
+	"1000028": {
+		"key":   "P1GN6nHEenrLFq1Qi8iAItDTulfEK05m",
+		"appid": "1000028",
+	},
+	"1000259": {
+		"key":   "nAZX8exqnHrzIc9r5uq01hRGzup6pskL",
+		"appid": "1000259",
+	},
+	"1000030": {
+		"key":   "n2CAjF8XvqgiZbiaWCvspFC64PAAGWrm",
+		"appid": "1000030",
+	},
+}
 
 func main() {
 
@@ -101,33 +145,16 @@ func calc(resChan chan int, exitChan chan bool, pool *sync.Pool) {
 }
 
 func SendPost(pool *sync.Pool) {
-
-	//params := GetParams()
-	params := GetPayoutParams()
-
-	signal := "hqPgg8BP06Sibmp3Q4KW0hMroUyHoOOr"
-	//signal := "BessXQtS8xy3SWudR0i6gc0zfSk3Z8ll"
-	//signal := "P1GN6nHEenrLFq1Qi8iAItDTulfEK05m"
-
-	sign, err := goutils.GetSign(params, signal)
+	// test 1000026  1000028 1000012 1000259
+	// local 1000026  1000028 1000012 1000030
+	// test local
+	//result, err := GetOrderParams(pool, urls["local"], projectList["1000026"])
+	//result, err := GetPayoutParams(pool, urls["local"], projectList["1000026"])
+	//result, err := GetOrderQuery(pool, urls["local"], projectList["1000012"])
+	result, err := GetPayoutQuery(pool, urls["local"], projectList["1000012"])
 	if err != nil {
 		return
 	}
-	headers := make(map[string]interface{})
-	headers["Content-Type"] = "application/json"
-	headers["appid"] = "1000012"
-	//headers["appid"] = "1000026"
-	//headers["appid"] = "1000028"
-	headers["version"] = "1.0"
-	headers["signature"] = sign
-
-	//url := "http://sunny-pay.co/pay/order"
-	//url := "http://sunny-pay.co/pay/payout"
-
-	//url := "https://hopepatti.fun/pay/order"
-	url := "https://hopepatti.fun/pay/payout"
-
-	result := curl.CurlNew(url, params, headers, pool)
 	// fmt.Println(result["code"])
 
 	resCode := cast.ToString(result["code"])
@@ -149,7 +176,7 @@ func SendPost(pool *sync.Pool) {
 	// Output: *goz.Response
 }
 
-func GetParams() map[string]interface{} {
+func GetOrderParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (map[string]interface{}, error) {
 	//mu.Lock()
 	mount := goutils.RandomNumber(5)
 
@@ -162,7 +189,7 @@ func GetParams() map[string]interface{} {
 	orderId := goutils.GenerateSerialNumBer("")
 	userId := goutils.RandStr(10)
 
-	fmt.Printf("GetParams orderId：%s , userId: %s, amount %d \n", orderId, userId, amount)
+	//fmt.Printf("GetOrderParams orderId：%s , userId: %s, amount %d \n", orderId, userId, amount)
 
 	params := make(map[string]interface{})
 	params["payment_method"] = "sunny.h5"
@@ -171,18 +198,34 @@ func GetParams() map[string]interface{} {
 	params["order_amount"] = amount
 	params["order_name"] = goutils.RandomString(10)
 	params["user_id"] = userId
-	//params["return_url"] = "https://11.fun/callback/zpay/order"
-	//params["notify_url"] = "https://11.fun/callback/zpay/order"
+	params["return_url"] = urlInfo["returnUrl"]
+	params["notify_url"] = urlInfo["notifyUrl"]
 	params["customer_name"] = "ericluzhonghua"
 	params["customer_phone"] = "9036830689"
 	params["customer_email"] = "ericluzhonghua@gmail.com"
 	params["device_info"] = "device_info"
 	params["order_note"] = "order_note"
-	//mu.Unlock()
-	return params
+
+	signal := projectInfo["key"]
+	//signal := "BessXQtS8xy3SWudR0i6gc0zfSk3Z8ll"
+	//signal := "P1GN6nHEenrLFq1Qi8iAItDTulfEK05m"
+
+	sign, err := goutils.GetSign(params, signal)
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]interface{})
+	headers["Content-Type"] = "application/json"
+	headers["appid"] = projectInfo["appid"]
+	headers["version"] = "1.0"
+	headers["signature"] = sign
+	url := urlInfo["order"]
+
+	result := curl.CurlNew(url, params, headers, pool)
+	return result, nil
 }
 
-func GetPayoutParams() map[string]interface{} {
+func GetPayoutParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (map[string]interface{}, error) {
 	//mu.Lock()
 	mount := goutils.RandomNumber(5)
 
@@ -195,7 +238,7 @@ func GetPayoutParams() map[string]interface{} {
 	orderId := goutils.GenerateSerialNumBer("Payout")
 	userId := goutils.RandStr(10)
 
-	fmt.Printf("GetParams orderId：%s , userId: %s, amount %d \n", orderId, userId, amount)
+	//fmt.Printf("GetOrderParams orderId：%s , userId: %s, amount %d \n", orderId, userId, amount)
 
 	params := make(map[string]interface{})
 	params["order_id"] = orderId
@@ -203,7 +246,7 @@ func GetPayoutParams() map[string]interface{} {
 	params["order_amount"] = amount
 	params["order_name"] = goutils.RandomString(10)
 	params["user_id"] = userId
-	//params["notify_url"] = "https://11.fun/callback/zpay/order"
+	params["notify_url"] = urlInfo["notifyUrl"]
 	params["customer_name"] = "ericluxxxx"
 	params["customer_phone"] = "903683xxxx"
 	params["customer_email"] = "ericluxxxx@gmail.com"
@@ -216,7 +259,74 @@ func GetPayoutParams() map[string]interface{} {
 	params["pay_type"] = "bank"
 	params["address"] = "F2/251-A SANGAM"
 	params["city"] = "MAHIPALPUR EXTENSION"
+	signal := projectInfo["key"]
 
+	sign, err := goutils.GetSign(params, signal)
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]interface{})
+	headers["Content-Type"] = "application/json"
+	headers["appid"] = projectInfo["appid"]
+	headers["version"] = "1.0"
+	headers["signature"] = sign
+	url := urlInfo["payout"]
+
+	result := curl.CurlNew(url, params, headers, pool)
 	//mu.Unlock()
-	return params
+	return result, nil
+}
+
+func GetOrderQuery(pool *sync.Pool, urlInfo, projectInfo map[string]string) (map[string]interface{}, error) {
+
+	//orderId := goutils.GenerateSerialNumBer("Payout")
+
+	randNu := rand.Intn(100)
+
+	orderId := constant.SnList[randNu]
+
+	params := make(map[string]interface{})
+
+	signal := projectInfo["key"]
+
+	sign, err := goutils.GetSign(params, signal)
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]interface{})
+	headers["Content-Type"] = "application/json"
+	headers["appid"] = projectInfo["appid"]
+	headers["version"] = "1.0"
+	headers["signature"] = sign
+	url := urlInfo["query"] + "?sn=" + orderId
+	result := curl.CurlNewGet(url, params, headers, pool)
+	//mu.Unlock()
+	return result, nil
+}
+
+func GetPayoutQuery(pool *sync.Pool, urlInfo, projectInfo map[string]string) (map[string]interface{}, error) {
+
+	//orderId := goutils.GenerateSerialNumBer("Payout")
+
+	randNu := rand.Intn(100)
+
+	orderId := constant.SnPayoutList[randNu]
+
+	params := make(map[string]interface{})
+
+	signal := projectInfo["key"]
+
+	sign, err := goutils.GetSign(params, signal)
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]interface{})
+	headers["Content-Type"] = "application/json"
+	headers["appid"] = projectInfo["appid"]
+	headers["version"] = "1.0"
+	headers["signature"] = sign
+	url := urlInfo["queryPayout"] + "?sn=" + orderId
+	result := curl.CurlNewGet(url, params, headers, pool)
+	//mu.Unlock()
+	return result, nil
 }
