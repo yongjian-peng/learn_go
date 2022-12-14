@@ -148,10 +148,10 @@ func SendPost(pool *sync.Pool) {
 	// test 1000026  1000028 1000012 1000259
 	// local 1000026  1000028 1000012 1000030
 	// test local
-	//result, err := GetOrderParams(pool, urls["local"], projectList["1000026"])
-	//result, err := GetPayoutParams(pool, urls["local"], projectList["1000026"])
-	//result, err := GetOrderQuery(pool, urls["local"], projectList["1000012"])
-	result, err := GetPayoutQuery(pool, urls["local"], projectList["1000012"])
+	result, err := GetOrderParams(pool, urls["test"], projectList["1000028"])
+	//result, err := GetPayoutParams(pool, urls["local"], projectList["1000030"])
+	//result, err := GetOrderQuery(pool, urls["local"], projectList["1000030"])
+	//result, err := GetPayoutQuery(pool, urls["local"], projectList["1000012"])
 	if err != nil {
 		return
 	}
@@ -185,6 +185,7 @@ func GetOrderParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (ma
 	if amount <= 10000 {
 		amount = 100000
 	}
+	amount = 10000
 
 	orderId := goutils.GenerateSerialNumBer("")
 	userId := goutils.RandStr(10)
@@ -227,13 +228,14 @@ func GetOrderParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (ma
 
 func GetPayoutParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (map[string]interface{}, error) {
 	//mu.Lock()
-	mount := goutils.RandomNumber(5)
+	mount := goutils.RandomNumber(3)
 
 	amount := cast.ToInt(mount) * 100
 
 	if amount <= 10000 {
-		amount = 100000
+		amount = 10000
 	}
+	amount = 10000
 
 	orderId := goutils.GenerateSerialNumBer("Payout")
 	userId := goutils.RandStr(10)
@@ -281,9 +283,10 @@ func GetOrderQuery(pool *sync.Pool, urlInfo, projectInfo map[string]string) (map
 
 	//orderId := goutils.GenerateSerialNumBer("Payout")
 
-	randNu := rand.Intn(100)
+	//randNu := rand.Intn(100)
 
-	orderId := constant.SnList[randNu]
+	//orderId := constant.SnList[randNu]
+	orderId := "10202212051029483588944250000001"
 
 	params := make(map[string]interface{})
 
