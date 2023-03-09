@@ -11,3 +11,15 @@ type File struct {
 	Name    string `json:"name"`
 	Content []byte `json:"content"`
 }
+
+/**
+ * CopyMap 赋值map
+ */
+func CopyMap(m map[string]interface{}) map[string]interface{} {
+	m2 := make(map[string]interface{}, len(m))
+	for k, v := range m {
+		m2[k] = v
+	}
+	// id should not be accessible here, it should exist only inside loop
+	return m2
+}

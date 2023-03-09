@@ -1,0 +1,20 @@
+#!/bin/bash
+echo 'generate db model'
+
+go run main.go  \
+-tplFile='./main_model.tpl'  \
+-modelFolder='./model/'  \
+-packageName='model'  \
+-dbIP='192.168.1.1'  \
+-dbPort=3306  \
+-dbConnection='dbhelper.DB'  \
+-dbName='micro-shop'  \
+-dbTablePre=''  \
+-userName='micro-shop'  \
+-pwd='ss'  \
+-genTable='admin_menu#admin_permissions#admin_role#admin_role_menu#admin_role_permissions#admin_user#admin_user_role#user'
+
+# -genTable='m_user_status#m_user_base' 多个用#隔开
+mv -f ./model/* ../../../model
+echo 'done'
+

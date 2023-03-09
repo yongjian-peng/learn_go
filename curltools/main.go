@@ -6,20 +6,21 @@ import (
 	"curltools/curl"
 	"curltools/goutils"
 	"fmt"
-	"github.com/spf13/cast"
 	"log"
 	"math/rand"
 	"strconv"
 	"sync"
 	"sync/atomic"
 
+	"github.com/spf13/cast"
+
 	"github.com/idoubi/goz"
 )
 
-const GroupNum int = 1
+const GroupNum int = 2
 
-const ResultChanNum int = 1
-const ExitChanNum int = 1
+const ResultChanNum int = 2
+const ExitChanNum int = 2
 
 var (
 	ResultSuccessNum int64
@@ -68,6 +69,10 @@ var projectList = map[string]map[string]string{
 	"1000030": {
 		"key":   "n2CAjF8XvqgiZbiaWCvspFC64PAAGWrm",
 		"appid": "1000030",
+	},
+	"1000279": {
+		"key":   "9nmoT9uuvPwpNVzNR8kxrqTxRYDfkr26",
+		"appid": "1000279",
 	},
 }
 
@@ -146,10 +151,10 @@ func calc(resChan chan int, exitChan chan bool, pool *sync.Pool) {
 
 func SendPost(pool *sync.Pool) {
 	// test 1000026  1000028 1000012 1000259
-	// local 1000026  1000028 1000012 1000030
+	// local 1000026  1000028 1000012 1000030 1000279
 	// test local
-	result, err := GetOrderParams(pool, urls["test"], projectList["1000028"])
-	//result, err := GetPayoutParams(pool, urls["local"], projectList["1000030"])
+	result, err := GetOrderParams(pool, urls["local"], projectList["1000279"])
+	// result, err := GetPayoutParams(pool, urls["local"], projectList["1000279"])
 	//result, err := GetOrderQuery(pool, urls["local"], projectList["1000030"])
 	//result, err := GetPayoutQuery(pool, urls["local"], projectList["1000012"])
 	if err != nil {
@@ -211,14 +216,20 @@ func GetOrderParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (ma
 	//signal := "BessXQtS8xy3SWudR0i6gc0zfSk3Z8ll"
 	//signal := "P1GN6nHEenrLFq1Qi8iAItDTulfEK05m"
 
-	sign, err := goutils.GetSign(params, signal)
-	if err != nil {
-		return nil, err
-	}
 	headers := make(map[string]interface{})
 	headers["Content-Type"] = "application/json"
 	headers["appid"] = projectInfo["appid"]
 	headers["version"] = "1.0"
+	headers["Timestamp"] = goutils.GetNowTimesTamp()
+
+	var notifySignMap = make(map[string]interface{})
+	notifySignMap = goutils.CopyMap(params)
+	notifySignMap["Timestamp"] = headers["Timestamp"]
+
+	sign, err := goutils.GetSign(notifySignMap, signal)
+	if err != nil {
+		return nil, err
+	}
 	headers["signature"] = sign
 	url := urlInfo["order"]
 
@@ -238,7 +249,8 @@ func GetPayoutParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (m
 	amount = 10000
 
 	orderId := goutils.GenerateSerialNumBer("Payout")
-	userId := goutils.RandStr(10)
+	// userId := goutils.RandStr(10)
+	userId := "218544"
 
 	//fmt.Printf("GetOrderParams orderId：%s , userId: %s, amount %d \n", orderId, userId, amount)
 
@@ -263,14 +275,20 @@ func GetPayoutParams(pool *sync.Pool, urlInfo, projectInfo map[string]string) (m
 	params["city"] = "MAHIPALPUR EXTENSION"
 	signal := projectInfo["key"]
 
-	sign, err := goutils.GetSign(params, signal)
-	if err != nil {
-		return nil, err
-	}
 	headers := make(map[string]interface{})
 	headers["Content-Type"] = "application/json"
 	headers["appid"] = projectInfo["appid"]
 	headers["version"] = "1.0"
+	headers["Timestamp"] = goutils.GetNowTimesTamp()
+
+	var notifySignMap = make(map[string]interface{})
+	notifySignMap = goutils.CopyMap(params)
+	notifySignMap["Timestamp"] = headers["Timestamp"]
+
+	sign, err := goutils.GetSign(notifySignMap, signal)
+	if err != nil {
+		return nil, err
+	}
 	headers["signature"] = sign
 	url := urlInfo["payout"]
 
