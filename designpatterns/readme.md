@@ -10,3 +10,5 @@
 
 ## 目录结构
 - chainofresponsibility  责任链模式
+- strategy  策略模式  go test .\strategy.go .\abstro.go .\strategy_test.go -v
+- abstractfactory 抽象工厂模式  go test -run  TestAbstractFactory -v
