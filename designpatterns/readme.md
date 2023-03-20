@@ -13,3 +13,4 @@
 - strategy  策略模式  go test .\strategy.go .\abstro.go .\strategy_test.go -v
 - abstractfactory 抽象工厂模式  go test -run  TestAbstractFactory -v
 - iterator 迭代器模式 go test -run TestIterator -v
+- mediator 中介模式 （调解员） go test -run TestMediator -v
