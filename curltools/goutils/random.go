@@ -2,15 +2,17 @@ package goutils
 
 import (
 	"context"
+	"curltools/config"
 	"curltools/constant"
 	"curltools/goRedis"
 	"fmt"
-	"github.com/go-redis/redis/v8"
-	"github.com/golang-module/carbon"
-	"github.com/spf13/cast"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/golang-module/carbon"
+	"github.com/spf13/cast"
 )
 
 // 随机生成字符串
@@ -75,6 +77,7 @@ func GenerateSerialNumBer(region string) string {
 	if ok {
 		prefix = preFixMap[region]
 	}
+	//return GetSequenceId(prefix)
 	nowTime := carbon.Now().ToDateTimeString()                     // 2020-08-05 13:14:15
 	nowTimeFormat := carbon.Parse(nowTime).ToShortDateTimeString() // 20200805131415
 	curTime := carbon.Now().TimestampNano()
@@ -103,6 +106,71 @@ func GenerateSerialNumBer(region string) string {
 	res.WriteString(roundNumber)
 
 	return res.String()
+}
+
+func GetSequenceId(prefix string) string {
+	//每纳秒可生成 9 个
+	//通过redis获取单位纳秒内的自增id
+	nanoSecond := carbon.Now().TimestampNano()
+	key := GetSequenceKey(nanoSecond)
+	sequence := Sequence(key)
+	for sequence > 9 {
+		//暂停1纳秒
+		time.Sleep(1 * time.Nanosecond)
+		nanoSecond = carbon.Now().TimestampNano()
+		key = GetSequenceKey(nanoSecond)
+		sequence = Sequence(key)
+	}
+	strNanosecond := cast.ToString(nanoSecond)
+	return fmt.Sprintf("%s%s%s%s", prefix, carbon.CreateFromTimestampNano(nanoSecond).Format("ymdHis"), strNanosecond[10:17], fmt.Sprintf("%03d", sequence))
+}
+
+func GetSequenceKey(currentTime int64) string {
+	return fmt.Sprintf("%s:%s:seq:%d", config.AppConfig.Server.Name, config.AppConfig.Server.Env, currentTime)
+}
+
+func Sequence(key string) int64 {
+
+	pipe := goRedis.Redis.TxPipeline()
+
+	//autoIncrement := goRedis.Redis.Incr(context.Background(), key).Val()
+	//
+	//// 设置过期时间
+	//ttl := goRedis.Redis.Expire(context.Background(), key, 1*time.Second)
+	//res, _ := ttl.Result()
+	//if res == false {
+	//	fmt.Println("resBool: ", res)
+	//}
+	// 执行事务操作，可以通过pipe读写redis
+	_ = pipe.Incr(context.Background(), key).Val()
+	pipe.Expire(context.Background(), key, 1*time.Second)
+
+	// 通过Exec函数提交redis事务
+	res1, _ := pipe.Exec(context.Background())
+
+	//for key1, val := range res1 {
+	//	item := strings.Split(val.String(), " ")
+	//
+	//	fmt.Println("key1:", key1, "val: ", val, "item:", item[2])
+	//}
+	item := strings.Split(res1[0].String(), " ")
+
+	if len(item) < 3 {
+		Sequence(key)
+		// return 0
+	}
+
+	res := cast.ToInt64(item[2])
+	//autoIncrement = res1[0]
+
+	//fmt.Println("res1: ", res1)
+	//fmt.Println("res1: ", res1[2])
+	//fmt.Println("err1: ", err1)
+
+	//if autoIncrement <= 1 {
+	//	goRedis.Redis.Expire(context.Background(), key, 2*time.Second)
+	//}
+	return res
 }
 
 func GenerateSerialNumBer2(region string) string {

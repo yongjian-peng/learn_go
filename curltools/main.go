@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"curltools/config"
 	"curltools/constant"
 	"curltools/curl"
+	"curltools/goRedis"
 	"curltools/goutils"
 	"fmt"
 	"log"
@@ -17,10 +19,15 @@ import (
 	"github.com/idoubi/goz"
 )
 
-const GroupNum int = 2
+const GroupNum int = 3
 
-const ResultChanNum int = 2
-const ExitChanNum int = 2
+const ResultChanNum int = 50000
+const ExitChanNum int = 50000
+
+//const GroupNum int = 1
+//
+//const ResultChanNum int = 2
+//const ExitChanNum int = 2
 
 var (
 	ResultSuccessNum int64
@@ -102,7 +109,8 @@ func main() {
 	// fmt.Printf("所有的请求已完成,请求数量：%d\n", RESUSTSUCCESSNUM)
 	resNum, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(ResultSuccessNum)/float64(ResultChanNum*GroupNum)), 64)
 	resNum = resNum * 100
-	fmt.Println("所有的请求已完成,成功率：", resNum, "%")
+	fmt.Println("所有的请求已完成,失败数量：", ResultSuccessNum)
+	//fmt.Println("所有的请求已完成,成功率：", resNum, "%")
 
 	resCodes.Range(func(k, v interface{}) bool {
 		fmt.Println("所有的请求已完成,成功编码:", k, v)
@@ -127,7 +135,7 @@ func usechannel(pool *sync.Pool) {
 	go func() {
 		for i := 0; i < ExitChanNum; i++ {
 			<-exitChan
-			fmt.Println("wait goroute ", i, " exited")
+			//fmt.Println("wait goroute ", i, " exited")
 		}
 		close(resultChan)
 		close(exitChan)
@@ -142,11 +150,58 @@ func usechannel(pool *sync.Pool) {
 
 func calc(resChan chan int, exitChan chan bool, pool *sync.Pool) {
 
-	SendPost(pool)
+	//SendPost(pool)
+
+	GenerateNum(pool)
 
 	//fmt.Println("exit")
 	exitChan <- true
 	// return
+}
+
+func GenerateNum(pool *sync.Pool) {
+	//resCode := cast.ToString(result["code"])
+	//ccc, ok := resCodes.Load(resCode)
+	//if ok {
+	//	ss := cast.ToInt(ccc) + 1
+	//	resCodes.Store(resCode, ss)
+	//} else {
+	//	resCodes.Store(resCode, 1)
+	//}
+	//randomNu := SAddKey()
+	//
+	//fmt.Println("randomNu: ", randomNu)
+	randomNu := goutils.GenerateSerialNumBer("")
+	//randomNu := "123"
+
+	exits := goRedis.Redis.SIsMember(context.Background(), "randomNu", randomNu).Val()
+	if !exits {
+		//atomic.AddInt64(&ResultSuccessNum, 1)
+	}
+	fmt.Println("randomNu: ", randomNu)
+	result, _ := goRedis.Redis.SAdd(context.Background(), "randomNu", randomNu).Result()
+	fmt.Println("result: ", result)
+	if result <= 0 {
+		atomic.AddInt64(&ResultSuccessNum, 1)
+	}
+
+	//test := goutils.Sequence("test")
+	//
+	//fmt.Println("test: ", test)
+
+	//result2, _ := goRedis.Redis.SAdd(context.Background(), "randomNu", randomNu).Result()
+	//fmt.Println("result2: ", result2)
+}
+
+func SAddKey() string {
+	randomNu := goutils.GenerateSerialNumBer("")
+	result, _ := goRedis.Redis.SAdd(context.Background(), "randomNu", randomNu).Result()
+	fmt.Println("result: ", result)
+	if result <= 0 {
+		randomNu = goutils.GenerateSerialNumBer("")
+		SAddKey()
+	}
+	return randomNu
 }
 
 func SendPost(pool *sync.Pool) {
