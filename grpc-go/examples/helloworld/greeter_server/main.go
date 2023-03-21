@@ -50,6 +50,11 @@ func (s *server) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.He
 	return &pb.HelloReply{Message: "Hello again " + in.GetName(), Age: in.GetAge()}, nil
 }
 
+func (s *server) PayIn(ctx context.Context, in *pb.PayInRequest) (*pb.PayInResponse, error) {
+	log.Printf("Received PayIn provider : %v, amount: %v, phone: %v, appid: %v", in.GetProvider(), in.GetAmount(), in.GetPhone(), in.GetAppid())
+	return &pb.PayInResponse{Sn: "Hello again " + in.GetProvider(), Appid: in.GetAppid(), Provider: in.GetProvider(), CreateTime: in.Amount}, nil
+}
+
 func main() {
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))

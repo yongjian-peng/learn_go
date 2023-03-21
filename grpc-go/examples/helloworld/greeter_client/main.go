@@ -22,6 +22,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"time"
 
@@ -65,4 +66,17 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.GetMessage())
+
+	p, pErr := c.PayIn(ctx, &pb.PayInRequest{
+		Provider: "alipay",
+		Amount:   100,
+		Phone:    "1547898",
+		Appid:    "10025",
+	})
+
+	if pErr != nil {
+		log.Fatalf("could not greet: %v", pErr)
+	}
+
+	fmt.Println("p: ", p)
 }

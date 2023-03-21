@@ -31,20 +31,20 @@ import (
 )
 
 const (
-	defaultName = "world"
-	defaultAge  = 10
+	defaultName2 = "world"
+	defaultAge2  = 10
 )
 
 var (
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
-	name = flag.String("name", defaultName, "Name to greet")
-	age  = flag.Int64("age", defaultAge, "Age to greet")
+	addr2 = flag.String("addr", "localhost:50051", "the address to connect to")
+	name2 = flag.String("name", defaultName2, "Name to greet")
+	age2  = flag.Int64("age", defaultAge2, "Age to greet")
 )
 
 func main() {
 	flag.Parse()
 	// 建立一个与服务器的链接
-	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(*addr2, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -56,13 +56,13 @@ func main() {
 	// 链接服务器并打印服务器的响应
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
-	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: *name, Age: *age})
+	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: *name2, Age: *age2})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s, age: %d", r.GetMessage(), r.GetAge())
 
-	r, err = c.SayHelloAgain(ctx, &pb.HelloRequest{Name: *name, Age: *age})
+	r, err = c.SayHelloAgain(ctx, &pb.HelloRequest{Name: *name2, Age: *age2})
 
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)

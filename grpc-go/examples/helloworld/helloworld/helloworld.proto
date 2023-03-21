@@ -26,6 +26,7 @@ service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+  rpc PayIn (PayInRequest) returns (PayInResponse) {}
 }
 
 // The request message containing the user's name.
@@ -38,4 +39,18 @@ message HelloRequest {
 message HelloReply {
   string message = 1;
   int64 age = 2;
+}
+
+message PayInRequest {
+  string provider = 1;
+  int64 amount = 2;
+  string phone = 3;
+  string appid = 4;
+}
+
+message PayInResponse {
+  string sn = 1;
+  string appid = 2;
+  string provider = 3;
+  int64 create_time = 4;
 }
