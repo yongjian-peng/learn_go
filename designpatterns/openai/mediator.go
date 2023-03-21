@@ -49,10 +49,12 @@ func main() {
 	// Create two ConcreteComponent instances and set their mediator to the ConcreteMediator instance
 	component1 := &ConcreteComponent{mediator: mediator}
 	component2 := &ConcreteComponent{mediator: mediator}
+	component3 := &ConcreteComponent{mediator: mediator}
 
 	// Add the components to the ConcreteMediator's list of components
-	mediator.components = append(mediator.components, component1, component2)
+	mediator.components = append(mediator.components, component1, component2, component3)
 
 	// Send an event from one component and ensure the other component receives it
 	component1.Send("Hello, world!")
+	component2.Send("Hello, component2!")
 }
