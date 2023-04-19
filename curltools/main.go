@@ -19,15 +19,15 @@ import (
 	"github.com/idoubi/goz"
 )
 
-const GroupNum int = 3
-
-const ResultChanNum int = 50000
-const ExitChanNum int = 50000
-
-//const GroupNum int = 1
+//const GroupNum int = 3
 //
-//const ResultChanNum int = 2
-//const ExitChanNum int = 2
+//const ResultChanNum int = 50000
+//const ExitChanNum int = 50000
+
+const GroupNum int = 1
+
+const ResultChanNum int = 1
+const ExitChanNum int = 1
 
 var (
 	ResultSuccessNum int64
@@ -150,9 +150,9 @@ func usechannel(pool *sync.Pool) {
 
 func calc(resChan chan int, exitChan chan bool, pool *sync.Pool) {
 
-	//SendPost(pool)
+	SendPost(pool)
 
-	GenerateNum(pool)
+	//GenerateNum(pool)
 
 	//fmt.Println("exit")
 	exitChan <- true
@@ -172,6 +172,10 @@ func GenerateNum(pool *sync.Pool) {
 	//
 	//fmt.Println("randomNu: ", randomNu)
 	randomNu := goutils.GenerateSerialNumBer("")
+	if randomNu == "" {
+		fmt.Println("randomNuNull: ", randomNu)
+		return
+	}
 	//randomNu := "123"
 
 	exits := goRedis.Redis.SIsMember(context.Background(), "randomNu", randomNu).Val()
