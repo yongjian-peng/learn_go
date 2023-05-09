@@ -1,0 +1,8 @@
+go 1.19
+
+use (
+ ./api-server
+ ./common
+ ./crond-server
+ ./job-server
+)
