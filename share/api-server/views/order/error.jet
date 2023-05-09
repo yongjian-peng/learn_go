@@ -1,0 +1,11 @@
+   <link rel="stylesheet" href="/assets/css/order/return_success.css" >
+    <div class="boxs">
+        <div class="payhead">
+
+        </div>
+        <div class="img_center">
+            <img width="5rem" src="/assets/images/close.png" alt="">
+            <div class="img_center_size">{{ error }}</div>
+        </div>
+
+    </div>

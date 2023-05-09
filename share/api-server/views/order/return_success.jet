@@ -1,0 +1,13 @@
+   <link rel="stylesheet" href="/assets/css/order/return_success.css" >
+    <div class="boxs">
+        <div class="payhead">
+            <div class="payhead_left">
+                <img src="/assets/images/return.png" alt="">
+            </div>
+        </div>
+        <div class="img_center">
+            <img src="/assets/images/success.png" alt="">
+            <div class="img_center_size">Success</div>
+        </div>
+
+    </div>
