@@ -1,0 +1,76 @@
+<link rel="stylesheet" href="/assets/css/order/checkout.css" >
+<link rel="stylesheet" href="/assets/css/order/qrcode.css" >
+<div id="app">
+    <div class="boxs">
+        <div class="payhead">
+            <div class="payhead_left" @click="Back">
+                <img src="/assets/images/return.png" alt="">
+            </div>
+            <div class="payhead_size">Select a payment mode</div>
+        </div>
+        <div class="boxs_padding">
+            <div class="boxs_top">
+
+                <div class="aaa">
+                    <div class="surya">Surya Enterprises</div>
+
+                    <div class="number">₹100.00</div>
+
+                    <div class="erwei" id="qrcode"></div>
+                    <div class="Scan">(Scan with your UPI App to Make Payment) </div>
+
+                </div>
+
+            </div>
+            <input type="hidden" value=[[ params.redirectUrl ]] ref="redirectUrl">
+            <input type="hidden" value=[[ params.redirectQrUrl ]] ref="redirectQrUrl">
+            <div class="click" @click="Pay">Click Here to pay Via UPI</div>
+            <div class="note">NOTE:Please wait for few seconds once the
+                payment is completed</div>
+            <div class="powered">Powered by <span class="powered_span">[[ title ]]</span></div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/assets/js/qr.js"></script>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            redirectUrl: "",
+            redirectQrUrl: "",
+        },
+        created: function () {
+
+        },
+        mounted: function () {
+            this.generateUrl()
+            this.generateQRCode()
+        },
+        methods: {
+            generateUrl: function () {
+                this.redirectUrl = this.$refs.redirectUrl.value
+                this.redirectQrUrl = this.$refs.redirectQrUrl.value
+            },
+            generateQRCode: function () {
+                const qrcode = new QRCode('qrcode', {
+                    text: this.redirectQrUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                })
+            },
+            Pay: function () {
+                if (this.redirectUrl != "") {
+                    window.location.href = this.redirectUrl
+                }
+            },
+            Back: function () {
+                window.history.back()
+            }
+        }
+    })
+</script>

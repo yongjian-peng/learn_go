@@ -1,0 +1,53 @@
+* {
+    margin: 0rem;
+    padding: 0rem;
+    box-sizing: border-box;
+}
+@media screen and (min-width: 1000px), screen and (orientation: landscape) {
+    .img_center {
+        height: 1rem;
+    }
+}
+@media screen and (min-width: 400px), screen and (orientation: landscape) {
+    .img_center img {
+        margin:20% 0 10% 0;
+    }
+}
+@media screen and (max-width: 400px), screen and (orientation: landscape) {
+    .img_center img {
+        margin: 40% 0 10% 0;
+    }
+}
+.payhead {
+    height: 0.88rem;
+    background: #6C44C2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payhead_left {
+    display: flex;
+    padding-left: 0.2rem;
+}
+
+.payhead_left img {
+    width: 0.48rem;
+    height: 0.48rem;
+}
+.img_center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+.img_center img {
+    width: 4.29rem;
+    height: 4.29rem;
+}
+.img_center_size {
+    font-size:0.48rem;
+    color: #333333;
+    text-align: center;
+}

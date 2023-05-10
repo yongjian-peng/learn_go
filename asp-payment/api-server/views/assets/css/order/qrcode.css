@@ -1,0 +1,118 @@
+* {
+    margin: 0rem;
+    padding: 0rem;
+    box-sizing: border-box;
+}
+
+.aaa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.boxs {
+    height: 16.24rem;
+    background-color: #EEEEEE;
+}
+
+.boxs_padding {
+    padding: 0 0.4rem;
+
+}
+
+.payhead {
+    height: 0.88rem;
+    background: #6C44C2;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0.3rem;
+}
+
+.payhead_left {
+    display: flex;
+    padding-left: 0.2rem;
+}
+
+.payhead_left img {
+    width: 0.48rem;
+    height: 0.48rem;
+}
+
+.payhead_size {
+    padding-right: 0.5rem;
+    font-size: 0.36rem;
+    font-weight: 400;
+    color: #FFFFFF;
+    margin: 0 auto;
+}
+
+.boxs_top {
+    width: 6.7rem;
+    height: 7.22rem;
+    margin: 0 auto;
+    background: #FFFFFF;
+    border-radius: 0.01rem 0.01rem 0.01rem 0.01rem;
+    opacity: 1;
+    border: 0.02rem solid #DDDDDD;
+    text-align: center;
+}
+
+.surya {
+    font-size: 0.32rem;
+    font-family: PingFang SC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    margin: 0.25rem 0;
+}
+
+.number {
+    font-size: 0.48rem;
+    font-family: PingFang SC-Semibold, PingFang SC;
+    font-weight: 600;
+    color: #333333;
+}
+
+.erwei {
+    margin: 0.5rem 0;
+}
+
+.Scan {
+    font-size: 0.28rem;
+    font-family: PingFang SC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+}
+
+.click {
+    width: 6.7rem;
+    height: 0.84rem;
+    font-size: 0.4rem;
+    line-height: 0.84rem;
+    margin: 0.5rem auto;
+    background: #DC3545;
+    border-radius: 0.42rem 0.42rem 0.42rem 0.42rem;
+    opacity: 1;
+    text-align: center;
+    font-family: PingFang SC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.note {
+    text-align: center;
+    font-size: 0.28rem;
+    font-family: PingFang SC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #DC3545;
+}
+
+.powered {
+    margin-top: 0.7rem;
+    text-align: center;
+    font-size: 0.28rem;
+}
+
+.powered_span {
+    color: #0D7CFF;
+}
