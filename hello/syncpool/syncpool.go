@@ -1,4 +1,4 @@
-package main
+x package main
 
 import (
 	"log"
