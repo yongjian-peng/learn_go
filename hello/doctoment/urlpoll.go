@@ -35,6 +35,7 @@ func StateMonitor(updateInterval time.Duration) chan<- State {
 	updates := make(chan State)
 	urlStatus := make(map[string]string)
 	ticker := time.NewTicker(updateInterval)
+
 	go func() {
 		for {
 			select {
@@ -65,6 +66,7 @@ type Resource struct {
 // Poll 对 url 执行 HTTP HEAD 请求
 // 并返回 HTTP 状态字符串或错误字符串
 func (r *Resource) Poll() string {
+	log.Println("Current Poll:")
 	resp, err := http.Head(r.url)
 	if err != nil {
 		log.Println("Error", r.url, err)
@@ -78,11 +80,13 @@ func (r *Resource) Poll() string {
 // Sleep 休眠适当的时间间隔（取决于错误状态）
 // 在发送资源之前完成。
 func (r *Resource) Sleep(done chan<- *Resource) {
+	log.Println("Current Sleep:")
 	time.Sleep(pollInterval + errTimeout*time.Duration(r.errCount))
 	done <- r
 }
 
 func Poller(in <-chan *Resource, out chan<- *Resource, status chan<- State) {
+	log.Println("Current Poller:")
 	for r := range in {
 		s := r.Poll()
 		status <- State{r.url, s}

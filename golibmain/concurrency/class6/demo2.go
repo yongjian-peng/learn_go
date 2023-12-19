@@ -1,27 +1,41 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 )
 
-func main() {
-	var wg sync.WaitGroup
-	wg.Add(4)
-	go dosomething(100, &wg) // 启动第一个goroutine
-	go dosomething(110, &wg) // 启动第二个goroutine
-	go dosomething(120, &wg) // 启动第三个goroutine
-	go dosomething(130, &wg) // 启动第四个goroutine
-
-	wg.Wait() // 主goroutine等待完成
-	fmt.Println("Done")
+// Book 书
+type Book struct {
+	name   string // 书名
+	writer string // 作者
+	Intro  []byte // 简介
 }
 
-func dosomething(millisece time.Duration, wg *sync.WaitGroup) {
-	duration := millisece * time.Millisecond
-	time.Sleep(duration) // 故意sleep一段时间
+// SaleBook 卖书
+func SaleBook() {
+	book := Book{
+		name:   "xxx",
+		writer: "yyy",
+		Intro:  []byte("zzz"),
+	}
+	book_str, _ := json.Marshal(book)
+	fmt.Println("book_str", string(book_str))
+}
 
-	fmt.Println("后台执行， duration:", duration)
-	wg.Done()
+func main() {
+	t1 := time.NewTimer(time.Minute / 2)
+	t2 := time.NewTicker(time.Second * 5)
+	for {
+		select {
+		case <-t2.C:
+			go func() {
+				SaleBook()
+			}()
+		case <-t1.C:
+			t2.Stop()
+			return
+		}
+	}
 }
