@@ -16,7 +16,6 @@ func main() {
 
 	// 从通道接受的值
 	value, ok := <-ch
-
 	// 检查是否成功的接受到值
 	if ok {
 		fmt.Println("接受到的值：", value)
