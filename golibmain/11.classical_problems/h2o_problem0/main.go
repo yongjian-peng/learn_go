@@ -18,16 +18,16 @@ type H2O struct {
 	semaH *semaphore.Weighted
 	// 氧原子的信号量
 	semaO *semaphore.Weighted
-	// 等待水分子的产生
+	// 等待水分子的产生 循环栅栏，用来控制合成
 	b cyclicbarrier.CyclicBarrier
 }
 
 // 创建一个水分子工厂.
 func New() *H2O {
 	return &H2O{
-		semaH: semaphore.NewWeighted(2),
-		semaO: semaphore.NewWeighted(1),
-		b:     cyclicbarrier.New(3),
+		semaH: semaphore.NewWeighted(2), // 氢原子需要两个
+		semaO: semaphore.NewWeighted(1), // 氧原子需要一个
+		b:     cyclicbarrier.New(3),     // 需要三个原子才能合成
 	}
 }
 
@@ -35,10 +35,10 @@ func New() *H2O {
 func (h2o *H2O) hydrogen(releaseHydrogen func()) {
 	// 准备一个H原子填坑
 	h2o.semaH.Acquire(context.Background(), 1)
-	releaseHydrogen()
+	releaseHydrogen() // 输出H
 	// 等待栅栏(另一个H原子和O原子的坑填好后栅栏开启)
 	h2o.b.Await(context.Background())
-	// 释放H原子的坑
+	// 释放H原子的空槽
 	h2o.semaH.Release(1)
 }
 
