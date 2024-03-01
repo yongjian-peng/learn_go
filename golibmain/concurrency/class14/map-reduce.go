@@ -50,7 +50,8 @@ func asStreamMR(done <-chan struct{}) <-chan interface{} {
 }
 
 func main() {
-	in := asStreamMR(nil)
+	p := make(chan struct{}, 1)
+	in := asStreamMR(p)
 
 	// map操作，乘以10
 	mapFn := func(v interface{}) interface{} {
@@ -64,4 +65,6 @@ func main() {
 
 	sum := reduce(mapChan(in, mapFn), reduceFn) // 返回累加结果
 	fmt.Println("sum=>", sum)
+	p <- struct{}{}
+
 }
