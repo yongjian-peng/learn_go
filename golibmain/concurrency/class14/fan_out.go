@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	cha1 := make(chan struct{}, 1)
@@ -51,7 +53,7 @@ func fanOut(ch <-chan struct{}, out []chan struct{}, async bool) {
 			for i := 0; i < len(out); i++ {
 				item := i
 				if async {
-					go func() { // 异步
+					go func() {
 						out[item] <- v // 放入到输出chan中，异步方式
 					}()
 				} else {

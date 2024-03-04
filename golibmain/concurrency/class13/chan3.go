@@ -24,3 +24,11 @@ func process(timeout time.Duration) bool {
 
 	}
 }
+
+func main() {
+	ti := time.Second
+
+	isOk := process(ti)
+
+	fmt.Println("isOk=>", isOk)
+}
