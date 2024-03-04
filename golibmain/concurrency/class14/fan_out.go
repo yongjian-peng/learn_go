@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 )
 
 func main() {
@@ -12,8 +13,9 @@ func main() {
 		make(chan struct{}, 1),
 		make(chan struct{}, 1),
 		make(chan struct{}, 1),
+		make(chan struct{}, 1),
 	}
-	fanOut(cha1, listens, false)
+	fanOutPri(cha1, listens, true)
 	cha1 <- struct{}{}
 	cha1 <- struct{}{}
 	cha1 <- struct{}{}
@@ -27,6 +29,7 @@ func main() {
 				for {
 					_, ok := <-listens[item]
 					if !ok {
+						fmt.Println("over")
 						over <- struct{}{}
 						close(over)
 						return
@@ -36,28 +39,34 @@ func main() {
 			}(item)
 		}
 	}()
+
 	<-over
 }
 
 // 扇出模式 一个输入，多个输出
-func fanOut(ch <-chan struct{}, out []chan struct{}, async bool) {
+func fanOutPri(ch <-chan struct{}, out []chan struct{}, async bool) {
+
 	go func() {
+		var wg sync.WaitGroup
 		defer func() { // 退出时关闭所有的输出chan
+			wg.Wait()
 			for i := 0; i < len(out); i++ {
 				close(out[i])
 			}
 		}()
 
 		for v := range ch { // 从输入 chan 中读取数据
-			v := v
+			vt := v
 			for i := 0; i < len(out); i++ {
 				item := i
 				if async {
+					wg.Add(1)
 					go func() {
-						out[item] <- v // 放入到输出chan中，异步方式
+						out[item] <- vt // 放入到输出chan中，异步方式
+						wg.Done()
 					}()
 				} else {
-					out[item] <- v // 放入到输出chan中，同步方式
+					out[item] <- vt // 放入到输出chan中，同步方式
 				}
 			}
 		}

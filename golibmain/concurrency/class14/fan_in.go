@@ -1,6 +1,10 @@
 package main
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+	"time"
+)
 
 // 扇入模式，多个输入，一个输出，反射方式
 func fanInRefeflect(chans ...<-chan interface{}) <-chan interface{} {
@@ -73,4 +77,40 @@ func mergeTwo(a, b <-chan interface{}) <-chan interface{} {
 		}
 	}()
 	return c
+}
+
+func main() {
+
+	// 创建三个输入通道
+	chan1 := make(chan interface{}, 1)
+	chan2 := make(chan interface{}, 1)
+	chan3 := make(chan interface{}, 1)
+
+	// 扇入模式的输出通道
+	outputChan := fanInRec(chan1, chan2, chan3)
+
+	// 向三个通道发送数据
+	go func() {
+		chan1 <- "Hello from chan1"
+		chan1 <- "Another message from chan1"
+		close(chan1)
+	}()
+
+	go func() {
+		chan2 <- "Hello from chan2"
+		time.Sleep(1 * time.Second) // 模拟延迟
+		chan2 <- "Delayed message from chan2"
+		close(chan2)
+	}()
+
+	go func() {
+		chan3 <- "Hello from chan3"
+		close(chan3)
+	}()
+
+	// 从输出通道读取数据并打印
+	for v := range outputChan {
+		fmt.Println(v)
+	}
+
 }
