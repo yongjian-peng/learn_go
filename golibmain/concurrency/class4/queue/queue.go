@@ -39,14 +39,14 @@ func NewQueue(n int) *SliceQueue {
 	}
 }
 
-// 入队，把值放在队尾
+// 入队，把值放在队尾.
 func (q *SliceQueue) Enqueue(v interface{}) {
 	q.mu.Lock()
 	q.data = append(q.data, v)
 	q.mu.Unlock()
 }
 
-// 出队，移出对头并返回
+// 出队，移出对头并返回.
 func (q *SliceQueue) Dequeue() interface{} {
 	q.mu.Lock()
 
