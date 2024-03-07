@@ -40,8 +40,8 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(2)
 
-	go printNumbers(ch, &wg)
 	go printLetters(ch, &wg)
+	go printNumbers(ch, &wg)
 
 	ch <- true // Start the first goroutine
 
