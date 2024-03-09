@@ -8,7 +8,7 @@ import (
 
 func main() {
 	var mu sync.RWMutex
-	// write,稍微等待，饭后制造一个Lock的场景
+	// write,稍微等待，然后制造一个Lock的场景
 	go func() {
 		time.Sleep(200 * time.Millisecond)
 		mu.Lock()

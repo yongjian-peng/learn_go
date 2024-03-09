@@ -22,7 +22,7 @@ func main() {
 		go func(i int) {
 			for {
 				<-chArr[i%4]
-				fmt.Printf("i am %d\n", i)
+				fmt.Printf("i am %d\n", i+1)
 
 				time.Sleep(1 * time.Second)
 				chArr[(i+1)%4] <- struct{}{}
@@ -31,5 +31,6 @@ func main() {
 	}
 
 	chArr[0] <- struct{}{}
-	select {}
+
+	time.Sleep(10 * time.Second)
 }
