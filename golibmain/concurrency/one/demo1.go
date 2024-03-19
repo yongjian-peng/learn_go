@@ -3,9 +3,9 @@ package main
 import "fmt"
 
 func main() {
-	//err01()
+	err01()
 	//err02()
-	err03()
+	//err03()
 }
 
 func err01() {

@@ -10,7 +10,7 @@ type Token struct {
 
 // 开启两个goroutine按照顺序打印数字
 func main() {
-	chs := []chan Token{make(chan Token, 1), make(chan Token, 1)}
+	chs := []chan Token{make(chan Token), make(chan Token)}
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -19,24 +19,24 @@ func main() {
 
 	chs[0] <- struct{}{}
 	wg.Wait()
+
 }
 
 func first(ch chan Token, nextCh chan Token, wg *sync.WaitGroup) {
-
-	for i := 1; i < 9999999; i += 2 {
+	defer wg.Done()
+	for i := 1; i <= 100; i += 2 {
 		token := <-ch
-		fmt.Println("i is :", i)
+		fmt.Println("first i is :", i)
 		nextCh <- token
 	}
-	wg.Done()
+	<-ch
 }
 
 func second(ch chan Token, nextCh chan Token, wg *sync.WaitGroup) {
-
-	for i := 2; i < 9999999; i += 2 {
+	defer wg.Done()
+	for i := 2; i <= 100; i += 2 {
 		token := <-ch
-		fmt.Println("i is :", i)
+		fmt.Println("second i is :", i)
 		nextCh <- token
 	}
-	wg.Done()
 }
