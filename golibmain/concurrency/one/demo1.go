@@ -3,9 +3,12 @@ package main
 import "fmt"
 
 func main() {
-	err01()
+
+	//for i := 0; i < 100; i++ {
+	//	err01()
+	//}
 	//err02()
-	//err03()
+	err03()
 }
 
 func err01() {
@@ -38,11 +41,13 @@ func err03() {
 	for _, v := range values {
 		go func() {
 			fmt.Println(v)
-			done <- true
+			//done <- true
+			<-done
 		}()
 	}
 
 	for _ = range values {
-		<-done
+		done <- true
+		//<-done
 	}
 }
