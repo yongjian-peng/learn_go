@@ -10,7 +10,7 @@ import (
 
 var wg = sync.WaitGroup{}
 
-// goroutine 泄漏 chan 阻塞。导致goroutine 占内存
+// goroutine 泄漏 chan 阻塞。导致goroutine 占内存.
 func main() {
 	fmt.Println("before goroutines:", runtime.NumGoroutine())
 	block1()
@@ -63,7 +63,7 @@ func requestWithNoClose() {
 	// defer resp.Body.Close()
 }
 
-// block4 阻塞 请求的 http body 未关闭，导致阻塞
+// block4 阻塞 请求的 http body 未关闭，导致阻塞.
 func block4() {
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
@@ -74,7 +74,7 @@ func block4() {
 	}
 }
 
-// block5 互斥锁忘记解锁
+// block5 互斥锁忘记解锁.
 func block5() {
 	var mutex sync.Mutex
 	for i := 0; i < 10; i++ {
@@ -84,7 +84,7 @@ func block5() {
 	}
 }
 
-// block6 sync.WaitGroup 使用不当
+// block6 sync.WaitGroup 使用不当.
 func block6() {
 	var wg6 sync.WaitGroup
 	for i := 0; i < 10; i++ {
